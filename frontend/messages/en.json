@@ -1,0 +1,15 @@
+{
+  "common": {
+    "home": "Home",
+    "explore": "Explore",
+    "booking": "Booking",
+    "myTrip": "My Trip",
+    "profile": "Profile",
+    "chat": "Chat"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "forgotPassword": "Forgot Password"
+  }
+}

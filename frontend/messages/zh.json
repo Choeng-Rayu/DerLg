@@ -1,0 +1,15 @@
+{
+  "common": {
+    "home": "主页",
+    "explore": "探索",
+    "booking": "预订",
+    "myTrip": "我的行程",
+    "profile": "个人资料",
+    "chat": "聊天"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "forgotPassword": "忘记密码"
+  }
+}
