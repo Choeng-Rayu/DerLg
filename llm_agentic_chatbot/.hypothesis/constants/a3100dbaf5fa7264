@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/tools/handlers/__init__.py
+# hypothesis_version: 6.151.9
+
+['TOOL_DISPATCH', 'ToolHandler', 'applyDiscountCode', 'calculateCustomTrip', 'cancelBooking', 'checkPaymentStatus', 'compareTrips', 'createBooking', 'customizeTrip', 'estimateBudget', 'generatePaymentQR', 'getBookingDetails', 'getCurrencyRates', 'getHotelDetails', 'getPlaces', 'getTripImages', 'getTripItinerary', 'getTripSuggestions', 'getUpcomingFestivals', 'getWeatherForecast', 'handle_compare_trips', 'handle_get_places', 'modifyBooking', 'validateUserDetails']

@@ -1,0 +1,79 @@
+# =============================================================================
+# DerLg.com AI Agent - Docker Compose Configuration
+# =============================================================================
+# Development environment with hot-reload and Redis
+
+services:
+  # ---------------------------------------------------------------------------
+  # AI Agent Service
+  # ---------------------------------------------------------------------------
+  ai-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: derlg-ai-agent
+    ports:
+      - "8000:8000"
+    environment:
+      # LLM Backend Configuration
+      - MODEL_BACKEND=${MODEL_BACKEND:-anthropic}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      # Backend API Configuration
+      - BACKEND_URL=${BACKEND_URL:-http://host.docker.internal:3001}
+      - AI_SERVICE_KEY=${AI_SERVICE_KEY}
+      # Redis Configuration (points to the redis service)
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      # Server Configuration
+      - HOST=0.0.0.0
+      - PORT=8000
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+      # Optional: Error Tracking
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      # Optional: CORS
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000}
+    volumes:
+      # Mount source code for hot-reload (uvicorn --reload)
+      - .:/app
+      # Prevent overwriting container's installed packages
+      - /app/__pycache__
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - derlg-network
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Redis Service - Session Storage & Pub/Sub
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: derlg-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - derlg-network
+    restart: unless-stopped
+
+# ---------------------------------------------------------------------------
+# Volumes
+# ---------------------------------------------------------------------------
+volumes:
+  redis-data:
+    driver: local
+
+# ---------------------------------------------------------------------------
+# Networks
+# ---------------------------------------------------------------------------
+networks:
+  derlg-network:
+    driver: bridge

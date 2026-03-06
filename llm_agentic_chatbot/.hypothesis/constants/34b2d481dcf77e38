@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/session/manager.py
+# hypothesis_version: 6.151.9
+
+['content', 'redis unavailable', 'role', 'session', 'session_deleted', 'session_load_skipped', 'session_loaded', 'session_not_found', 'session_save_skipped', 'session_saved', 'text', 'type', 'user']

@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/utils/logging.py
+# hypothesis_version: 6.151.9
+
+[245, 567, 1234, 1850, '%(message)s', '***REDACTED***', '192.168.1.100', 'EN', '__main__', 'ai-agent', 'ai_service_key', 'anthropic_api_key', 'api_call', 'api_key', 'application', 'booking_123456789', 'booking_id', 'debug', 'debug_message', 'derlg-ai-agent', 'end_turn', 'error_message', 'exception_occurred', 'getTripSuggestions', 'info', 'info_message', 'iso', 'json', 'logging_configured', 'model_api_call', 'password', 'payment_intent_id', 'secret', 'service', 'service_key', 'session_id', 'test_logger', 'token', 'tool_executed', 'user_111222333', 'user_123456789', 'user_987654321', 'user_id', 'warning_message', 'websocket_connected']
