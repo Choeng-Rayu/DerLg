@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/session/state.py
+# hypothesis_version: 6.151.9
+
+['BOOKING', 'CUSTOMIZATION', 'DISCOVERY', 'EN', 'EXPLORATION', 'KH', 'PAYMENT', 'POST_BOOKING', 'SUGGESTION', 'ZH', 'preferred_language']

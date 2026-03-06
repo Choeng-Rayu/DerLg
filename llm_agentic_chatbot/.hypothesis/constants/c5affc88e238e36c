@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/config/settings.py
+# hypothesis_version: 6.151.9
+
+[8000, 65535, '.env', '/', '0.0.0.0', 'AI_SERVICE_KEY', 'ANTHROPIC_API_KEY', 'BACKEND_URL', 'LOG_LEVEL', 'MODEL_BACKEND', 'OLLAMA_BASE_URL', 'SKIP_SETTINGS_INIT', 'anthropic', 'change-this', 'critical', 'debug', 'error', 'ignore', 'info', 'ollama', 'utf-8', 'warning', 'xxxxx', 'your-']

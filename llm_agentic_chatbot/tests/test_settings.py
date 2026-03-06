@@ -74,6 +74,7 @@ def test_settings_with_custom_values(monkeypatch):
 
 def test_missing_model_backend(monkeypatch):
     """Test that missing MODEL_BACKEND raises validation error."""
+    monkeypatch.delenv("MODEL_BACKEND", raising=False)
     monkeypatch.setenv("BACKEND_URL", "http://localhost:3001")
     monkeypatch.setenv("AI_SERVICE_KEY", "d" * 32)
     monkeypatch.setenv("REDIS_URL", "redis://localhost:6379")
@@ -88,7 +89,7 @@ def test_missing_model_backend(monkeypatch):
 def test_missing_anthropic_key_when_backend_is_anthropic(monkeypatch):
     """Test that missing ANTHROPIC_API_KEY raises error when MODEL_BACKEND=anthropic."""
     monkeypatch.setenv("MODEL_BACKEND", "anthropic")
-    # Don't set ANTHROPIC_API_KEY
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.setenv("BACKEND_URL", "http://localhost:3001")
     monkeypatch.setenv("AI_SERVICE_KEY", "e" * 32)
     monkeypatch.setenv("REDIS_URL", "redis://localhost:6379")
@@ -103,7 +104,7 @@ def test_missing_anthropic_key_when_backend_is_anthropic(monkeypatch):
 def test_missing_ollama_url_when_backend_is_ollama(monkeypatch):
     """Test that missing OLLAMA_BASE_URL raises error when MODEL_BACKEND=ollama."""
     monkeypatch.setenv("MODEL_BACKEND", "ollama")
-    # Don't set OLLAMA_BASE_URL
+    monkeypatch.delenv("OLLAMA_BASE_URL", raising=False)
     monkeypatch.setenv("BACKEND_URL", "http://localhost:3001")
     monkeypatch.setenv("AI_SERVICE_KEY", "f" * 32)
     monkeypatch.setenv("REDIS_URL", "redis://localhost:6379")
@@ -119,6 +120,7 @@ def test_missing_backend_url(monkeypatch):
     """Test that missing BACKEND_URL raises validation error."""
     monkeypatch.setenv("MODEL_BACKEND", "anthropic")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-key")
+    monkeypatch.delenv("BACKEND_URL", raising=False)
     monkeypatch.setenv("AI_SERVICE_KEY", "g" * 32)
     monkeypatch.setenv("REDIS_URL", "redis://localhost:6379")
     
@@ -133,6 +135,7 @@ def test_missing_ai_service_key(monkeypatch):
     monkeypatch.setenv("MODEL_BACKEND", "anthropic")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-key")
     monkeypatch.setenv("BACKEND_URL", "http://localhost:3001")
+    monkeypatch.delenv("AI_SERVICE_KEY", raising=False)
     monkeypatch.setenv("REDIS_URL", "redis://localhost:6379")
     
     with pytest.raises(ValidationError) as exc_info:
@@ -177,6 +180,7 @@ def test_missing_redis_url(monkeypatch):
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-key")
     monkeypatch.setenv("BACKEND_URL", "http://localhost:3001")
     monkeypatch.setenv("AI_SERVICE_KEY", "h" * 32)
+    monkeypatch.delenv("REDIS_URL", raising=False)
     
     with pytest.raises(ValidationError) as exc_info:
         Settings()
@@ -261,6 +265,15 @@ def test_port_validation(monkeypatch):
 
 def test_env_file_loading(tmp_path, monkeypatch):
     """Test that settings can load from .env file."""
+    # Remove env vars that would take precedence over .env file
+    monkeypatch.delenv("MODEL_BACKEND", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_BASE_URL", raising=False)
+    monkeypatch.delenv("BACKEND_URL", raising=False)
+    monkeypatch.delenv("AI_SERVICE_KEY", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+    monkeypatch.delenv("LOG_LEVEL", raising=False)
+
     # Create a temporary .env file
     env_file = tmp_path / ".env"
     env_file.write_text("""
@@ -271,12 +284,12 @@ AI_SERVICE_KEY=nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 REDIS_URL=redis://localhost:6379
 LOG_LEVEL=debug
 """)
-    
+
     # Change to temp directory
     monkeypatch.chdir(tmp_path)
-    
+
     settings = Settings()
-    
+
     assert settings.MODEL_BACKEND == "anthropic"
     assert settings.ANTHROPIC_API_KEY == "sk-ant-test-key-from-file"
     assert settings.LOG_LEVEL == "debug"
@@ -284,6 +297,14 @@ LOG_LEVEL=debug
 
 def test_startup_validation_with_valid_config(monkeypatch, tmp_path):
     """Test that main.py successfully loads with valid configuration."""
+    # Remove env vars that would take precedence over .env file
+    monkeypatch.delenv("MODEL_BACKEND", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_BASE_URL", raising=False)
+    monkeypatch.delenv("BACKEND_URL", raising=False)
+    monkeypatch.delenv("AI_SERVICE_KEY", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+
     # Create a temporary .env file with valid configuration
     env_file = tmp_path / ".env"
     env_file.write_text("""
@@ -293,19 +314,27 @@ BACKEND_URL=http://localhost:3001
 AI_SERVICE_KEY=oooooooooooooooooooooooooooooooo
 REDIS_URL=redis://localhost:6379
 """)
-    
+
     # Change to temp directory
     monkeypatch.chdir(tmp_path)
-    
+
     # This should not raise any exceptions
     settings = Settings()
-    
+
     assert settings.MODEL_BACKEND == "anthropic"
     assert settings.ANTHROPIC_API_KEY == "sk-ant-test-key-valid"
 
 
 def test_startup_validation_fails_with_missing_required_field(monkeypatch, tmp_path):
     """Test that startup validation catches missing required fields."""
+    # Remove env vars that would take precedence over .env file
+    monkeypatch.delenv("MODEL_BACKEND", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_BASE_URL", raising=False)
+    monkeypatch.delenv("BACKEND_URL", raising=False)
+    monkeypatch.delenv("AI_SERVICE_KEY", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+
     # Create a temporary .env file missing MODEL_BACKEND
     env_file = tmp_path / ".env"
     env_file.write_text("""
@@ -326,6 +355,14 @@ REDIS_URL=redis://localhost:6379
 
 def test_startup_validation_fails_with_invalid_service_key(monkeypatch, tmp_path):
     """Test that startup validation catches invalid AI_SERVICE_KEY."""
+    # Remove env vars that would take precedence over .env file
+    monkeypatch.delenv("MODEL_BACKEND", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_BASE_URL", raising=False)
+    monkeypatch.delenv("BACKEND_URL", raising=False)
+    monkeypatch.delenv("AI_SERVICE_KEY", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+
     env_file = tmp_path / ".env"
     env_file.write_text("""
 MODEL_BACKEND=anthropic

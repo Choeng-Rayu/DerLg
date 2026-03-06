@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/core.py
+# hypothesis_version: 6.151.9
+
+[2048, 'agent_loop_iteration', 'agent_turn_complete', 'assistant', 'content', 'end_turn', 'id', 'input', 'name', 'role', 'text', 'tool_result', 'tool_use', 'tool_use_id', 'type', 'user']

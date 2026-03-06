@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/tools/handlers/trips.py
+# hypothesis_version: 6.151.9
+
+['Accept-Language', 'Content-Type', 'X-Service-Key', 'application/json', 'base_trip_id', 'customizations', 'trip_id', 'trip_ids']

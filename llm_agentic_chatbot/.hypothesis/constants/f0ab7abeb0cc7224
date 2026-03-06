@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/utils/redis.py
+# hypothesis_version: 6.151.9
+
+[1.0, '@', 'redis_connected', 'redis_disconnected', 'redis_reconnected', 'utf-8']

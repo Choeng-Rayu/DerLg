@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/session/side_effects.py
+# hypothesis_version: 6.151.9
+
+['+00:00', 'CONFIRMED', 'DISCOVERY', 'POST_BOOKING', 'SUCCEEDED', 'Z', 'booking_id', 'booking_ref', 'cancelBooking', 'checkPaymentStatus', 'createBooking', 'data', 'generatePaymentQR', 'getTripSuggestions', 'id', 'payment_intent_id', 'reference', 'reserved_until', 'side_effect_applied', 'status', 'success', 'trips']

@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/formatters/message_types.py
+# hypothesis_version: 6.151.9
+
+['booking_confirmed', 'budget_estimate', 'comparison', 'image_gallery', 'itinerary', 'qr_payment', 'text', 'trip_cards', 'weather']

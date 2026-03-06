@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/models/anthropic.py
+# hypothesis_version: 6.151.9
+
+[0.7, 1.0, 60.0, 1000, 2048, 'anthropic_api_call', 'anthropic_api_error', 'text', 'tool_use', 'unknown']

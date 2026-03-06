@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/api/health.py
+# hypothesis_version: 6.151.9
+
+['/health', 'ai-agent', 'ok', 'service', 'status', 'uptime_seconds']
