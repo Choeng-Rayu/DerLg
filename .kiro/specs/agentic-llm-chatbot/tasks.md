@@ -14,20 +14,20 @@ This task list implements the Python FastAPI AI Agent service with LangGraph sta
 - [x] 1.1.4 Create main.py with FastAPI application initialization
 - [x] 1.1.5 Create config/settings.py with Pydantic BaseSettings
 - [x] 1.1.6 Implement environment variable validation on startup
-- [~] 1.1.7 Create Dockerfile for production deployment
-- [~] 1.1.8 Create Dockerfile.dev for development with hot reload
-- [~] 1.1.9 Create docker-compose.yml entry for AI agent service
-- [~] 1.1.10 Create README.md with setup and deployment instructions
+- [ ] 1.1.7 Create Dockerfile for production deployment
+- [ ] 1.1.8 Create Dockerfile.dev for development with hot reload
+- [ ] 1.1.9 Create docker-compose.yml entry for AI agent service
+- [ ] 1.1.10 Create README.md with setup and deployment instructions
 
 ### Task 1.2: Logging and Monitoring Setup
 
 - [x] 1.2.1 Configure structlog for structured JSON logging
 - [x] 1.2.2 Implement logging middleware for all requests
 - [x] 1.2.3 Create utils/logging.py with log level configuration
-- [~] 1.2.4 Integrate Sentry for error tracking
-- [~] 1.2.5 Create /health endpoint for health checks
-- [~] 1.2.6 Create /metrics endpoint with Prometheus format
-- [~] 1.2.7 Implement metrics tracking (active connections, messages processed, tool calls)
+- [ ] 1.2.4 Integrate Sentry for error tracking
+- [ ] 1.2.5 Create /health endpoint for health checks
+- [ ] 1.2.6 Create /metrics endpoint with Prometheus format
+- [ ] 1.2.7 Implement metrics tracking (active connections, messages processed, tool calls)
 
 
 ## Phase 2: Data Models and State Management
