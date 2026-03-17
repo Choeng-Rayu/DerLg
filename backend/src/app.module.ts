@@ -23,9 +23,8 @@ import { AiToolsModule } from './ai-tools/ai-tools.module.js';
 import { RedisModule } from './redis/redis.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { JobsModule } from './jobs/jobs.module.js';
+import { AuditLogsModule } from './audit-logs/audit-logs.module.js';
 import { SentryModule } from '@sentry/nestjs/setup';
-import { APP_FILTER } from '@nestjs/core';
-import { SentryGlobalFilter } from '@sentry/nestjs/setup';
 
 
 @Module({
@@ -60,6 +59,7 @@ import { SentryGlobalFilter } from '@sentry/nestjs/setup';
     RedisModule,
     PrismaModule,
     JobsModule,
+    AuditLogsModule,
   ],
   controllers: [AppController],
   providers: [AppService, HealthService],

@@ -1,0 +1,24 @@
+model Hotel {
+  id                 String   @id @default(uuid()) @db.Uuid
+  name               String   @db.VarChar(200)
+  province           String   @db.VarChar(100)
+  address            String   @db.Text
+  starRating         Int      @map("star_rating")
+  latitude           Decimal  @db.Decimal(9, 6)
+  longitude          Decimal  @db.Decimal(9, 6)
+  imageUrls          String[] @map("image_urls")
+  amenities          String[]
+  checkInTime        DateTime @map("check_in_time") @db.Time
+  checkOutTime       DateTime @map("check_out_time") @db.Time
+  cancellationPolicy Json     @map("cancellation_policy")
+  isActive           Boolean  @default(true) @map("is_active")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  rooms              HotelRoom[]
+  trips              Trip[]
+
+  @@map("hotels")
+}
+
+

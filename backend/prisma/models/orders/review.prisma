@@ -1,0 +1,18 @@
+model Review {
+    id          String      @id @default(uuid()) @db.Uuid
+    bookingId   String      @map("booking_id") @db.Uuid
+    userId      String      @map("user_id") @db.Uuid
+    subjectType SubjectType @map("subject_type")
+    subjectId   String      @map("subject_id") @db.Uuid
+    rating      Int
+    comment     String?     @db.Text
+    isVerified  Boolean     @default(false) @map("is_verified")
+    isVisible   Boolean     @default(true) @map("is_visible")
+    createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+    // Relations
+    booking Booking @relation(fields: [bookingId], references: [id])
+    user    User    @relation(fields: [userId], references: [id])
+
+    @@map("reviews")
+}
