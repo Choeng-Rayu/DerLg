@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/api/payment_listener.py
+# hypothesis_version: 6.151.9
+
+[2.0, 'CONFIRMED', 'Payment confirmed!', 'SUCCEEDED', 'agent_response', 'booking_ref', 'content', 'data', 'message', 'payment_confirmed', 'status', 'type']

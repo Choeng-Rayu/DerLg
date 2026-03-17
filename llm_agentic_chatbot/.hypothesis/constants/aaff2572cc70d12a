@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/models/ollama.py
+# hypothesis_version: 6.151.9
+
+[60.0, 1000, 2048, '/', 'arguments', 'content', 'description', 'end_turn', 'function', 'input_schema', 'llama3.1:8b', 'message', 'messages', 'model', 'name', 'num_predict', 'ollama_api_call', 'options', 'parameters', 'role', 'stream', 'system', 'text', 'tool_calls', 'tool_use', 'tools', 'type']

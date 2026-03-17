@@ -14,6 +14,9 @@ This module initializes the FastAPI application with:
 import sys
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 from contextlib import asynccontextmanager
 from pydantic import ValidationError
 import structlog
@@ -72,15 +75,18 @@ except Exception as e:
 try:
     from api.websocket import router as ws_router
     from api.health import router as health_router
+    from api.metrics import router as metrics_router
     from api.middleware import add_logging_middleware
     from utils.logging import setup_logging
     from utils.redis import init_redis, close_redis
+    from agent.tools.executor import close_http_pool
     DEPENDENCIES_AVAILABLE = True
 except ImportError:
     # Dependencies not yet implemented - this is expected during early development
     DEPENDENCIES_AVAILABLE = False
     ws_router = None
     health_router = None
+    metrics_router = None
     add_logging_middleware = None
 
 logger = structlog.get_logger()
@@ -111,6 +117,23 @@ async def lifespan(app: FastAPI):
             log_level=settings.LOG_LEVEL,
             sentry_enabled=settings.SENTRY_DSN is not None
         )
+
+        # Initialize Sentry if configured
+        if settings.SENTRY_DSN:
+            try:
+                import sentry_sdk
+                from sentry_sdk.integrations.fastapi import FastApiIntegration
+                from sentry_sdk.integrations.starlette import StarletteIntegration
+                sentry_sdk.init(
+                    dsn=settings.SENTRY_DSN,
+                    integrations=[FastApiIntegration(), StarletteIntegration()],
+                    traces_sample_rate=0.1,
+                    environment="production",
+                )
+                logger.info("sentry_initialized")
+            except ImportError:
+                logger.warning("sentry_sdk_not_installed", message="Install sentry-sdk[fastapi] for error tracking")
+
         logger.info(
             "configuration_validated",
             message="All required environment variables are present and valid"
@@ -127,6 +150,7 @@ async def lifespan(app: FastAPI):
     
     # Shutdown
     if DEPENDENCIES_AVAILABLE:
+        await close_http_pool()
         await close_redis()
         logger.info("ai_agent_stopped")
 
@@ -147,6 +171,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        return response
+
+
+app.add_middleware(SecurityHeadersMiddleware)
+
 # Request logging middleware (only if dependencies are available)
 if DEPENDENCIES_AVAILABLE and add_logging_middleware:
     add_logging_middleware(app)
@@ -155,6 +194,7 @@ if DEPENDENCIES_AVAILABLE and add_logging_middleware:
 if DEPENDENCIES_AVAILABLE:
     app.include_router(ws_router)
     app.include_router(health_router)
+    app.include_router(metrics_router)
 
 
 if __name__ == "__main__":
