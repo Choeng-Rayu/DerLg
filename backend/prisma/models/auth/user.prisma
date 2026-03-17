@@ -1,0 +1,36 @@
+model User {
+  id                    String    @id @default(uuid()) @db.Uuid
+  supabaseUid           String    @unique @map("supabase_uid")
+  email                 String    @unique @db.VarChar(255)
+  name                  String    @db.VarChar(100)
+  phone                 String?   @db.VarChar(20)
+  avatarUrl             String?   @map("avatar_url") @db.Text
+  role                  UserRole  @default(TRAVELER)
+  preferredLanguage     Language  @default(EN) @map("preferred_language")
+  loyaltyPoints         Int       @default(0) @map("loyalty_points")
+  isStudent             Boolean   @default(false) @map("is_student")
+  studentVerifiedAt     DateTime? @map("student_verified_at") @db.Timestamptz
+  emergencyContactName  String?   @map("emergency_contact_name") @db.VarChar
+  emergencyContactPhone String?   @map("emergency_contact_phone") @db.VarChar
+  tokenVersion          Int       @default(0) @map("token_version")
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  guide                Guide?
+  bookings             Booking[]
+  payments             Payment[]
+  reviews              Review[]
+  loyaltyTransactions  LoyaltyTransaction[]
+  emergencyAlerts      EmergencyAlert[]
+  studentVerifications StudentVerification[] @relation("UserVerification")
+  reviewedVerifications StudentVerification[] @relation("AdminReviewer")
+  notifications        Notification[]
+  aiSessions           AISession[]
+  auditLogs            AuditLog[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([supabaseUid])
+  @@map("users")
+}

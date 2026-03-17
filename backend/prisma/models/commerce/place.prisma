@@ -1,0 +1,25 @@
+model Place {
+  id                 String   @id @default(uuid()) @db.Uuid
+  name               String   @db.VarChar(200)
+  nameKh             String   @map("name_kh") @db.VarChar(200)
+  nameZh             String   @map("name_zh") @db.VarChar(200)
+  province           String   @db.VarChar(100)
+  category           PlaceCategory
+  description        String   @db.Text
+  descriptionKh      String   @map("description_kh") @db.Text
+  descriptionZh      String   @map("description_zh") @db.Text
+  visitorTips        String?  @map("visitor_tips") @db.Text
+  dressCode          String?  @map("dress_code") @db.Text
+  entryFeeUsd        Decimal? @map("entry_fee_usd") @db.Decimal(8, 2)
+  openingHours       Json     @map("opening_hours")
+  latitude           Decimal  @db.Decimal(9, 6)
+  longitude          Decimal  @db.Decimal(9, 6)
+  imageUrls          String[] @map("image_urls")
+  isOfflineAvailable Boolean  @default(false) @map("is_offline_available")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  festivals          Festival[]
+
+  @@map("places")
+}

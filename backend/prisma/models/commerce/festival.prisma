@@ -1,0 +1,24 @@
+
+
+
+model Festival {
+  id              String   @id @default(uuid()) @db.Uuid
+  name            String   @db.VarChar(200)
+  nameKh          String   @map("name_kh") @db.VarChar(200)
+  nameZh          String   @map("name_zh") @db.VarChar(200)
+  province        String   @db.VarChar(100)
+  startDate       DateTime @map("start_date") @db.Date
+  endDate         DateTime @map("end_date") @db.Date
+  description     String   @db.Text
+  placeId         String?  @map("place_id") @db.Uuid
+  imageUrl        String?  @map("image_url") @db.Text
+  hasDiscount     Boolean  @default(false) @map("has_discount")
+  discountPercent Int?     @map("discount_percent")
+  isActive        Boolean  @default(true) @map("is_active")
+
+  // Relations
+  place           Place?   @relation(fields: [placeId], references: [id])
+  discountCodes   DiscountCode[]
+
+  @@map("festivals")
+}
