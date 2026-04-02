@@ -20,3 +20,19 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+
+
+llm_agentic_chatbot/.pytest_cache/
+llm_agentic_chatbot/.hypothesis/
+llm_agentic_chatbot/__pycache__/
+llm_agentic_chatbot/agent/__pycache__/
+llm_agentic_chatbot/agent/agent_test/__pycache__/
+llm_agentic_chatbot/agent/agent_test/__pycache__/__init__.cpython-310.pyc
+llm_agentic_chatbot/agent/agent_test/__pycache__/test_agent.pyc
+llm_agentic_chatbot/agent/agent_test/__pycache__/test_agent.cpython-310.pyc
+llm_agentic_chatbot/agent/__pycache__/__init__.cpython-310.pyc
+llm_agentic_chatbot/agent/__pycache__/agent.pyc
+llm_agentic_chatbot/agent/__pycache__/agent.cpython-310.pyc
+llm_agentic_chatbot/agent/agent_test/__pycache__/__init__.cpython-310.pyc
+llm_agentic_chatbot/agent/agent_test/__pycache__/test_agent.pyc
+llm_agentic_chatbot/agent/agent_test/__pycache__/test_agent.cpython-310.pyc
