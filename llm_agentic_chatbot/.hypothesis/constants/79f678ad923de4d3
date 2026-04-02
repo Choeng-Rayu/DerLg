@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/prompts/__init__.py
+# hypothesis_version: 6.151.9
+
+['build_system_prompt']

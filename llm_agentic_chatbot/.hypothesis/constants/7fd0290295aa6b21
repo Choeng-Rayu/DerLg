@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/formatters/formatter.py
+# hypothesis_version: 6.151.9
+
+['CONFIRMED', 'amount', 'booking_ref', 'breakdown', 'content', 'currency', 'data', 'expires_at', 'forecast', 'images', 'itinerary', 'qr_code_url', 'total_estimate_usd', 'trips', 'type']

@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/agent/tools/handlers/info.py
+# hypothesis_version: 6.151.9
+
+['Accept-Language', 'Content-Type', 'X-Service-Key', 'application/json', 'category', 'date', 'destination', 'duration_days', 'end_date', 'from', 'language', 'people_count', 'region', 'start_date', 'to', 'trip_type']

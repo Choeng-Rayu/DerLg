@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/utils/cache.py
+# hypothesis_version: 6.151.9
+
+[300, 1024, ':', 'F', 'cache_hit', 'cache_miss_stored', 'expires_at', 'hits', 'misses', 'size', 'value']

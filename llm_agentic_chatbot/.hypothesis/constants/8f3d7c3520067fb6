@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/api/metrics.py
+# hypothesis_version: 6.151.9
+
+[0.0, '/metrics', 'avg', 'count', 'max', 'min', 'total']

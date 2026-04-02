@@ -1,0 +1,180 @@
+# =============================================================================
+# DerLg.com AI Agent - Code Quality Configuration
+# =============================================================================
+# Centralizes configuration for Black, Pylint, mypy, and pytest.
+# Tools are installed via requirements.txt.
+
+[project]
+name = "derlg-ai-agent"
+version = "1.0.0"
+description = "Conversational travel booking concierge for Cambodia"
+requires-python = ">=3.11"
+
+# =============================================================================
+# Black - Code Formatter
+# =============================================================================
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | __pycache__
+  | \.hypothesis
+  | htmlcov
+)/
+'''
+
+# =============================================================================
+# Pylint - Static Analysis
+# =============================================================================
+[tool.pylint.main]
+# Python version to target
+py-version = "3.11"
+
+# Directories to analyze
+source-roots = ["."]
+
+# Ignore patterns
+ignore-patterns = [
+    "test_*.py",
+    "conftest.py",
+    "__pycache__",
+]
+
+[tool.pylint.messages_control]
+# Disable rules that conflict with project conventions or Black formatting
+disable = [
+    "C0114",  # missing-module-docstring (enforced selectively)
+    "C0115",  # missing-class-docstring (enforced selectively)
+    "C0116",  # missing-function-docstring (enforced on public only)
+    "C0301",  # line-too-long (handled by Black)
+    "C0103",  # invalid-name (allows single-letter vars in comprehensions)
+    "R0903",  # too-few-public-methods (Pydantic models, dataclasses)
+    "R0913",  # too-many-arguments (tool handlers have fixed signature)
+    "W0511",  # fixme (allow TODO/FIXME in code)
+    "W0107",  # unnecessary-pass
+    "E0611",  # no-name-in-module (false positives with pydantic)
+    "E1101",  # no-member (false positives with dynamic attributes)
+    "W0223",  # abstract-method (intentional in ModelClient)
+    "C0209",  # consider-using-f-string (some string formatting is intentional)
+]
+
+[tool.pylint.format]
+# Maximum line length (matches Black)
+max-line-length = 100
+
+# Maximum number of arguments for a function
+max-args = 10
+
+[tool.pylint.basic]
+# Good variable names that Pylint should not flag
+good-names = [
+    "i", "j", "k", "v", "e", "f", "cb", "tc", "ws", "db",
+    "id", "ip", "fn", "ok", "up",
+]
+
+[tool.pylint.design]
+# Maximum number of local variables in a function
+max-locals = 20
+
+# Maximum number of return statements in a function
+max-returns = 8
+
+# Maximum number of branches in a function
+max-branches = 15
+
+[tool.pylint.imports]
+# Allow wildcard imports from these modules
+allow-wildcard-with-all = false
+
+[tool.pylint.typecheck]
+# List of module names for which member attributes should not be checked
+ignored-modules = [
+    "redis.asyncio",
+    "anthropic",
+]
+
+# =============================================================================
+# mypy - Static Type Checking
+# =============================================================================
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+show_error_codes = true
+show_column_numbers = true
+pretty = true
+
+# Exclude test files from strict checking
+exclude = [
+    "tests/",
+    "__pycache__/",
+    "\\.hypothesis/",
+]
+
+# Per-module overrides for third-party libraries without type stubs
+[[tool.mypy.overrides]]
+module = [
+    "anthropic.*",
+    "langgraph.*",
+    "langchain_core.*",
+    "sentry_sdk.*",
+    "structlog.*",
+    "httpx.*",
+    "uvicorn.*",
+    "hypothesis.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+
+# =============================================================================
+# pytest - Test Configuration
+# =============================================================================
+# Note: Primary pytest config is in pytest.ini. This section provides
+# additional coverage settings.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "unit: Unit tests (no external dependencies)",
+    "integration: Integration tests (may require Redis/backend)",
+    "property: Property-based tests (Hypothesis)",
+    "slow: Slow-running tests",
+]
+
+[tool.coverage.run]
+source = ["agent", "api", "utils", "config"]
+omit = [
+    "tests/*",
+    "**/__pycache__/*",
+    "**/conftest.py",
+]
+
+[tool.coverage.report]
+# Fail if coverage drops below this percentage
+fail_under = 70
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.",
+    "raise NotImplementedError",
+    "pass",
+    "except ImportError",
+    "if TYPE_CHECKING:",
+]

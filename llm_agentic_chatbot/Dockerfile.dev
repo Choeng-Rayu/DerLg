@@ -1,0 +1,31 @@
+# =============================================================================
+# DerLg.com AI Agent - Development Dockerfile
+# =============================================================================
+# Full Python 3.11 image with hot-reload support via uvicorn --reload
+
+FROM python:3.11
+
+# Metadata labels
+LABEL maintainer="DerLg.com Team"
+LABEL description="DerLg.com AI Agent - Development Environment"
+
+WORKDIR /app
+
+# Prevent Python from writing .pyc files and enable unbuffered output
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install Python dependencies (cached layer unless requirements change)
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application source code
+# In development, this is overridden by the volume mount in docker-compose
+COPY . .
+
+# Expose the application port
+EXPOSE 8000
+
+# Start uvicorn with --reload for hot-reload during development
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

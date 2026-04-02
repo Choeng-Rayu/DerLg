@@ -1,0 +1,63 @@
+# =============================================================================
+# DerLg.com AI Agent - Docker Ignore
+# =============================================================================
+# Prevents unnecessary files from being included in Docker build context
+
+# Version control
+.git
+.gitignore
+
+# Python artifacts
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files (secrets - never include in image)
+.env
+.env.local
+.env.production
+
+# Documentation and specs
+*.md
+.kiro/
+docs/
+
+# Docker files (avoid recursive inclusion)
+Dockerfile
+Dockerfile.dev
+docker-compose.yml
+.dockerignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Railway config
+railway.json
+
+# Pytest config (not needed in production)
+pytest.ini

@@ -1,0 +1,4 @@
+# file: /home/rayu/DerLg/llm_agentic_chatbot/api/websocket.py
+# hypothesis_version: 6.151.9
+
+[30.0, 4000, 4001, 4002, '/ws/{session_id}', 'Auth timeout', 'EN', 'KH', 'ZH', 'agent_error', 'agent_response', 'auth', 'content', 'error', 'language', 'resume', 'type', 'typing_end', 'typing_start', 'user_id', 'user_message', 'websocket_connected', 'websocket_error', 'welcome']
