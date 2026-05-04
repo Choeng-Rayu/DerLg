@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DerLg Frontend
 
-## Getting Started
+Next.js App Router frontend for the DerLg Cambodia travel platform.
 
-First, run the development server:
+## Stack
+
+- Next.js 16
+- TypeScript
+- Tailwind CSS
+- Zustand
+- React Query
+- React Hook Form + Zod
+- next-intl
+
+## Local Development
+
+1. Copy env values:
+
+```bash
+cp .env.example .env.local
+```
+
+2. Start the app:
+
+```bash
+npm install
+npm run dev
+```
+
+3. Open `http://localhost:3000`
+
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run start
+npm run lint
+npm run test
+npm run test:e2e
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Required Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+See [.env.example](./.env.example).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Key values:
 
-## Learn More
+- `NEXT_PUBLIC_APP_URL`
+- `NEXT_PUBLIC_API_URL`
+- `NEXT_PUBLIC_WS_URL`
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+- `NEXT_PUBLIC_SENTRY_DSN`
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment Notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Set all `NEXT_PUBLIC_*` variables in the Vercel project.
+2. Set the production app URL and API URL.
+3. Run `npm run build` as the build command.
+4. Serve with the default Next.js output.
 
-## Deploy on Vercel
+### Netlify
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Set all `NEXT_PUBLIC_*` variables in the Netlify site settings.
+2. Build command: `npm run build`
+3. Publish directory: `.next`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Backend Alignment
+
+The frontend is currently aligned to these backend route groups:
+
+- `/v1/auth`
+- `/v1/users`
+- `/v1/trips`
+- `/v1/explore`
+- `/v1/festivals`
+- `/v1/bookings`
+- `/v1/payments`
+- `/v1/hotels`
+- `/v1/transportation`
+- `/v1/guides`
+- `/v1/loyalty`
+- `/v1/student-discount`
+- `/v1/emergency`
+- `/v1/notifications`
+- `/v1/currency`
+
+## Current Notes
+
+- The booking, profile, trip discovery, and payment intent flows are wired to the current Nest backend.
+- Some advanced surfaces from the full spec are scaffolded and ready for the next implementation pass rather than fully completed end to end.
