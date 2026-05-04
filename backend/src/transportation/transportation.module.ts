@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TransportationService } from './transportation.service.js';
-import { TransportationController } from './transportation.controller.js';
-import { PrismaModule } from '../prisma/prisma.module.js';
+import { TransportationService } from './transportation.service';
+import { TransportationController } from './transportation.controller';
 
 @Module({
-  imports: [PrismaModule],
   controllers: [TransportationController],
   providers: [TransportationService],
   exports: [TransportationService],

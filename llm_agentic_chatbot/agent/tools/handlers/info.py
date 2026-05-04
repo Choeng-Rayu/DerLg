@@ -56,7 +56,7 @@ async def handle_get_weather_forecast(
     language: str,
     *,
     destination: str,
-    date: str,
+    date: Optional[str] = None,
     **kwargs: Any,
 ) -> dict[str, Any]:
     """Get a weather forecast for a destination on a specific date.
@@ -69,13 +69,15 @@ async def handle_get_weather_forecast(
         service_key: AI service authentication key.
         language: Accept-Language value.
         destination: Place or city name in Cambodia.
-        date: Target date in ISO-8601 format (YYYY-MM-DD).
+        date: Optional target date in ISO-8601 format (YYYY-MM-DD).
 
     Returns:
         Parsed JSON response containing weather forecast data.
     """
     url = f"{backend_url}/v1/ai-tools/weather"
-    params = {"destination": destination, "date": date}
+    params: dict[str, str] = {"destination": destination}
+    if date is not None:
+        params["date"] = date
     response = await client.get(url, params=params, headers=_headers(service_key, language))
     response.raise_for_status()
     return response.json()

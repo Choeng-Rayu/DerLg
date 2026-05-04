@@ -1,4 +1,5 @@
-// Zustand: chat messages
-import { create } from 'zustand';
+'use client'
 
-export const useChatStore = create((set) => ({}));
+import { useAppStore } from '@/stores/app-store'
+
+export const useChatStore = useAppStore

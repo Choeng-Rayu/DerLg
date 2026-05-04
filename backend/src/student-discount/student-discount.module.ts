@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { StudentDiscountService } from './student-discount.service.js';
-import { StudentDiscountController } from './student-discount.controller.js';
-import { PrismaModule } from '../prisma/prisma.module.js';
+import { StudentDiscountService } from './student-discount.service';
+import { StudentDiscountController } from './student-discount.controller';
 
 @Module({
-  imports: [PrismaModule],
   controllers: [StudentDiscountController],
   providers: [StudentDiscountService],
   exports: [StudentDiscountService],

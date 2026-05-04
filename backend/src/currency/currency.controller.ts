@@ -1,12 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
-import { CurrencyService } from './currency.service.js';
+import { Controller, Get, Query } from '@nestjs/common';
+import { CurrencyService } from './currency.service';
 
-@Controller('v1/currency')
+@Controller('currency')
 export class CurrencyController {
-  constructor(private readonly currencyService: CurrencyService) {}
+  constructor(private readonly service: CurrencyService) {}
 
   @Get('rates')
-  async getExchangeRates() {
-    return this.currencyService.getExchangeRates();
+  async getRates() {
+    return this.service.getRates();
+  }
+
+  @Get('convert')
+  async convert(@Query('amount') amount: number) {
+    const rates = await this.service.getRates();
+    return this.service.convertAmount(amount, rates);
   }
 }

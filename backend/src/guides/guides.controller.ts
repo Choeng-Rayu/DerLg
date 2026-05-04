@@ -1,12 +1,29 @@
-import { Controller, Get } from '@nestjs/common';
-import { GuidesService } from './guides.service.js';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { GuidesService } from './guides.service';
 
-@Controller('v1/guides')
+@Controller('guides')
 export class GuidesController {
-  constructor(private readonly guidesService: GuidesService) {}
+  constructor(private readonly service: GuidesService) {}
 
   @Get()
-  async findAll() {
-    return this.guidesService.findAll();
+  async getGuides(
+    @Query('language') language?: string,
+    @Query('specialty') specialty?: string,
+    @Query('isVerified') isVerified?: boolean,
+    @Query('page') page?: number,
+    @Query('perPage') perPage?: number,
+  ) {
+    return this.service.getGuides({
+      language,
+      specialty,
+      isVerified,
+      page,
+      perPage,
+    });
+  }
+
+  @Get(':id')
+  async getGuideById(@Param('id') id: string) {
+    return this.service.getGuideById(id);
   }
 }

@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AiToolsService } from './ai-tools.service.js';
-import { AiToolsController } from './ai-tools.controller.js';
-import { PrismaModule } from '../prisma/prisma.module.js';
+import { AiToolsService } from './ai-tools.service';
+import { AiToolsController } from './ai-tools.controller';
+import { TripsModule } from '../trips/trips.module';
+import { BookingsModule } from '../bookings/bookings.module';
+import { PaymentsModule } from '../payments/payments.module';
+import { CurrencyModule } from '../currency/currency.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [TripsModule, BookingsModule, PaymentsModule, CurrencyModule],
   controllers: [AiToolsController],
   providers: [AiToolsService],
   exports: [AiToolsService],
