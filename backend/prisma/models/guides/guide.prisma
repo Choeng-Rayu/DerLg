@@ -1,0 +1,23 @@
+model Guide {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @unique @map("user_id") @db.Uuid
+  languages       String[]
+  bio             String   @db.Text
+  bioKh           String   @map("bio_kh") @db.Text
+  bioZh           String   @map("bio_zh") @db.Text
+  specialties     String[]
+  pricePerDayUsd  Decimal  @map("price_per_day_usd") @db.Decimal(10, 2)
+  yearsExperience Int      @map("years_experience")
+  certifications  String[]
+  profileImageUrl String?  @map("profile_image_url") @db.Text
+  avgRating       Decimal? @map("avg_rating") @db.Decimal(3, 2)
+  totalReviews    Int      @default(0) @map("total_reviews")
+  isVerified      Boolean  @default(false) @map("is_verified")
+  isAvailable     Boolean  @default(true) @map("is_available")
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id])
+  bookings Booking[]
+
+  @@map("guides")
+}

@@ -1,0 +1,131 @@
+enum UserRole {
+  TRAVELER
+  GUIDE
+  ADMIN
+  SUPPORT
+}
+
+enum Language {
+  EN
+  KH
+  ZH
+}
+
+enum Environment {
+  MOUNTAIN
+  BEACH
+  CITY
+  FOREST
+  ISLAND
+  TEMPLE
+}
+
+enum PlaceCategory {
+  TEMPLE
+  MUSEUM
+  NATURE
+  MARKET
+  BEACH
+  MOUNTAIN
+}
+
+enum RoomType {
+  SINGLE
+  DOUBLE
+  TWIN
+  SUITE
+}
+
+enum VehicleCategory {
+  VAN
+  BUS
+  TUK_TUK
+}
+
+enum VehicleTier {
+  STANDARD
+  VIP
+}
+
+enum BookingType {
+  PACKAGE
+  HOTEL_ONLY
+  TRANSPORT_ONLY
+  GUIDE_ONLY
+}
+
+enum BookingStatus {
+  PENDING
+  RESERVED
+  CONFIRMED
+  CANCELLED
+  REFUNDED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  CARD
+  BAKONG_QR
+  PAYPAL
+}
+
+enum SubjectType {
+  TRIP
+  HOTEL
+  GUIDE
+  VEHICLE
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED_USD
+}
+
+enum LoyaltyTransactionType {
+  EARNED
+  REDEEMED
+  EXPIRED
+  ADJUSTED
+}
+
+enum AlertType {
+  SOS
+  MEDICAL
+  THEFT
+  LOST
+}
+
+enum AlertStatus {
+  SENT
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum NotificationType {
+  BOOKING_CONFIRM
+  REMINDER
+  FESTIVAL_ALERT
+  PAYMENT
+  EMERGENCY
+}
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+  SMS
+}

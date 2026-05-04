@@ -1,0 +1,19 @@
+
+model DiscountCode {
+  id             String       @id @default(uuid()) @db.Uuid
+  code           String       @unique @db.VarChar(20)
+  discountType   DiscountType @map("discount_type")
+  discountValue  Decimal      @map("discount_value") @db.Decimal(10, 2)
+  minBookingUsd  Decimal      @map("min_booking_usd") @db.Decimal(10, 2)
+  validFrom      DateTime     @map("valid_from") @db.Timestamptz
+  validUntil     DateTime     @map("valid_until") @db.Timestamptz
+  maxUses        Int?         @map("max_uses")
+  currentUses    Int          @default(0) @map("current_uses")
+  festivalId     String?      @map("festival_id") @db.Uuid
+  isActive       Boolean      @default(true) @map("is_active")
+
+  // Relations
+  festival       Festival?    @relation(fields: [festivalId], references: [id])
+
+  @@map("discount_codes")
+}

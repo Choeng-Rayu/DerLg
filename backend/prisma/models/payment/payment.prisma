@@ -1,0 +1,29 @@
+model Payment {
+  id                    String        @id @default(uuid()) @db.Uuid
+  bookingId             String        @map("booking_id") @db.Uuid
+  userId                String        @map("user_id") @db.Uuid
+  stripePaymentIntentId String        @unique @map("stripe_payment_intent_id") @db.VarChar(100)
+  stripeChargeId        String?       @unique @map("stripe_charge_id") @db.VarChar(100)
+  stripeEventId         String?       @unique @map("stripe_event_id") @db.VarChar(100)
+  amountUsd             Decimal       @map("amount_usd") @db.Decimal(10, 2)
+  currency              String        @default("USD") @db.VarChar(3)
+  status                PaymentStatus @default(PENDING)
+  paymentMethod         PaymentMethod @map("payment_method")
+  qrCodeUrl             String?       @map("qr_code_url") @db.Text
+  paidAt                DateTime?     @map("paid_at") @db.Timestamptz
+  refundedAt            DateTime?     @map("refunded_at") @db.Timestamptz
+  refundAmountUsd       Decimal       @default(0) @map("refund_amount_usd") @db.Decimal(10, 2)
+  refundReason          String?       @map("refund_reason") @db.Text
+  failureCode           String?       @map("failure_code") @db.VarChar
+  failureMessage        String?       @map("failure_message") @db.Text
+  createdAt             DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  booking               Booking       @relation(fields: [bookingId], references: [id])
+  user                  User          @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([bookingId])
+  @@index([status])
+  @@map("payments")
+}

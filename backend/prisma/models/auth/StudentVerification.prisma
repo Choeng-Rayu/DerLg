@@ -1,0 +1,18 @@
+model StudentVerification {
+    id                String             @id @default(uuid()) @db.Uuid
+    userId            String             @map("user_id") @db.Uuid
+    studentIdImageUrl String             @map("student_id_image_url") @db.Text
+    faceSelfieUrl     String             @map("face_selfie_url") @db.Text
+    institutionName   String             @map("institution_name") @db.VarChar(200)
+    status            VerificationStatus @default(PENDING)
+    reviewedBy        String?            @map("reviewed_by") @db.Uuid
+    rejectionReason   String?            @map("rejection_reason") @db.Text
+    expiresAt         DateTime?          @map("expires_at") @db.Date
+    createdAt         DateTime           @default(now()) @map("created_at") @db.Timestamptz
+
+    // Relations
+    user     User  @relation("UserVerification", fields: [userId], references: [id])
+    reviewer User? @relation("AdminReviewer", fields: [reviewedBy], references: [id])
+
+    @@map("student_verifications")
+}
