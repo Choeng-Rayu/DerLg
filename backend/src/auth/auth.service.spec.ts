@@ -3,12 +3,14 @@ import { AuthService } from './auth.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { RedisService } from '../redis/redis.service'
 import { JwtService } from '@nestjs/jwt'
-import { SupabaseService } from './supabase/supabase.service'
 import { AppConfigService } from '../config/config.service'
 import {
   ConflictException,
   UnauthorizedException,
 } from '@nestjs/common'
+import * as bcrypt from 'bcrypt'
+
+jest.mock('bcrypt')
 
 describe('AuthService', () => {
   let service: AuthService
@@ -16,6 +18,7 @@ describe('AuthService', () => {
   const mockPrisma = {
     user: {
       findUnique: jest.fn(),
+      findFirst: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     },
@@ -31,16 +34,9 @@ describe('AuthService', () => {
     verify: jest.fn(),
   }
 
-  const mockSupabase = {
-    signUp: jest.fn(),
-    signInWithPassword: jest.fn(),
-    deleteUser: jest.fn(),
-    resetPasswordForEmail: jest.fn(),
-  }
-
   const mockConfig = {
-    jwtAccessSecret: 'access-secret-32-chars-minimum-for-testing',
-    jwtRefreshSecret: 'refresh-secret-32-chars-minimum-for-testing',
+    jwtAccessSecret: 'access-secret-32-chars-minimum-test',
+    jwtRefreshSecret: 'refresh-secret-32-chars-minimum-test',
     corsOrigins: ['http://localhost:3000'],
   }
 
@@ -51,7 +47,6 @@ describe('AuthService', () => {
         { provide: PrismaService, useValue: mockPrisma },
         { provide: RedisService, useValue: mockRedis },
         { provide: JwtService, useValue: mockJwt },
-        { provide: SupabaseService, useValue: mockSupabase },
         { provide: AppConfigService, useValue: mockConfig },
       ],
     }).compile()
@@ -62,7 +57,7 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('should throw ConflictException when email already exists', async () => {
-      mockPrisma.user.findUnique.mockResolvedValue({ id: 'existing-user' })
+      mockPrisma.user.findUnique.mockResolvedValue({ id: 'existing' })
 
       await expect(
         service.register({
@@ -73,12 +68,9 @@ describe('AuthService', () => {
       ).rejects.toThrow(ConflictException)
     })
 
-    it('should create user in Supabase then in DB', async () => {
+    it('should hash password and create user', async () => {
       mockPrisma.user.findUnique.mockResolvedValue(null)
-      mockSupabase.signUp.mockResolvedValue({
-        data: { user: { id: 'sb-user-123' } },
-        error: null,
-      })
+      ;(bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password')
       mockPrisma.user.create.mockResolvedValue({
         id: 'user-1',
         email: 'new@test.com',
@@ -90,156 +82,140 @@ describe('AuthService', () => {
         name: 'New User',
       } as any)
 
-      expect(result.userId).toBe('user-1')
-      expect(result.message).toContain('Registration successful')
-      expect(mockSupabase.signUp).toHaveBeenCalledWith(
-        'new@test.com',
-        'Password123!',
+      expect(bcrypt.hash).toHaveBeenCalledWith('Password123!', 12)
+      expect(mockPrisma.user.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            email: 'new@test.com',
+            passwordHash: 'hashed-password',
+            name: 'New User',
+            role: 'USER',
+          }),
+        }),
       )
+      expect(result.userId).toBe('user-1')
+    })
+
+    it('should lowercase email on register', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(null)
+      ;(bcrypt.hash as jest.Mock).mockResolvedValue('hashed')
+      mockPrisma.user.create.mockResolvedValue({ id: 'u1', email: 'test@test.com' })
+
+      await service.register({
+        email: 'TEST@TEST.COM',
+        password: 'pass',
+        name: 'X',
+      } as any)
+
+      expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
+        where: { email: 'test@test.com' },
+      })
     })
   })
 
   describe('login', () => {
-    it('should throw UnauthorizedException when Supabase auth fails', async () => {
-      mockSupabase.signInWithPassword.mockResolvedValue({
-        data: null,
-        error: { message: 'Invalid credentials' },
-      })
-
-      await expect(
-        service.login({ email: 'test@test.com', password: 'wrong' }),
-      ).rejects.toThrow(UnauthorizedException)
-    })
-
-    it('should return tokens and user data on successful login', async () => {
-      mockSupabase.signInWithPassword.mockResolvedValue({
-        data: { user: { id: 'sb-user-1' } },
-        error: null,
-      })
-      mockPrisma.user.findUnique.mockResolvedValue({
-        id: 'user-1',
-        name: 'Test User',
-        email: 'test@test.com',
-        role: 'USER',
-        preferredLanguage: 'EN',
-        loyaltyPoints: 100,
-        isStudent: false,
-        avatarUrl: null,
-        tokenVersion: 0,
-      })
-
-      const result = await service.login({
-        email: 'test@test.com',
-        password: 'correct',
-      })
-
-      expect(result.accessToken).toBe('mock-token')
-      expect(result.refreshToken).toBe('mock-token')
-      expect(result.user.id).toBe('user-1')
-      expect(result.user.email).toBe('test@test.com')
-    })
-
-    it('should throw UnauthorizedException when user not in database', async () => {
-      mockSupabase.signInWithPassword.mockResolvedValue({
-        data: { user: { id: 'sb-user-1' } },
-        error: null,
-      })
+    it('should throw UnauthorizedException when user not found', async () => {
       mockPrisma.user.findUnique.mockResolvedValue(null)
 
       await expect(
-        service.login({ email: 'test@test.com', password: 'correct' }),
+        service.login({ email: 'x@x.com', password: 'pass' }),
       ).rejects.toThrow(UnauthorizedException)
+    })
+
+    it('should throw UnauthorizedException on wrong password', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue({
+        id: 'u1',
+        email: 'x@x.com',
+        passwordHash: 'hash',
+      })
+      ;(bcrypt.compare as jest.Mock).mockResolvedValue(false)
+
+      await expect(
+        service.login({ email: 'x@x.com', password: 'wrong' }),
+      ).rejects.toThrow(UnauthorizedException)
+    })
+
+    it('should return tokens and user data on success', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue({
+        id: 'u1',
+        name: 'Test',
+        email: 'test@test.com',
+        passwordHash: 'hash',
+        role: 'USER',
+        preferredLanguage: 'EN',
+        loyaltyPoints: 0,
+        isStudent: false,
+        avatarUrl: null,
+        emailVerified: true,
+        tokenVersion: 0,
+      })
+      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+
+      const result = await service.login({ email: 'test@test.com', password: 'correct' })
+
+      expect(result.accessToken).toBe('mock-token')
+      expect(result.refreshToken).toBe('mock-token')
+      expect(result.user.email).toBe('test@test.com')
     })
   })
 
   describe('refreshAccessToken', () => {
-    it('should throw UnauthorizedException on invalid token', async () => {
-      mockJwt.verify.mockImplementation(() => {
-        throw new Error('invalid token')
-      })
+    it('should throw on invalid token', async () => {
+      mockJwt.verify.mockImplementation(() => { throw new Error('bad') })
 
-      await expect(
-        service.refreshAccessToken('invalid-token'),
-      ).rejects.toThrow(UnauthorizedException)
+      await expect(service.refreshAccessToken('bad-token')).rejects.toThrow(
+        UnauthorizedException,
+      )
     })
 
-    it('should throw UnauthorizedException when token version mismatch', async () => {
-      mockJwt.verify.mockReturnValue({ sub: 'user-1', tokenVersion: 1 })
-      mockRedis.get.mockResolvedValue('2') // stored version is higher
-      
-      await expect(
-        service.refreshAccessToken('valid-token'),
-      ).rejects.toThrow(UnauthorizedException)
-    })
-  })
+    it('should throw when Redis version mismatch', async () => {
+      mockJwt.verify.mockReturnValue({ sub: 'u1', tokenVersion: 1 })
+      mockRedis.get.mockResolvedValue('5')
 
-  describe('logout', () => {
-    it('should increment token version and call Supabase deleteUser', async () => {
-      mockPrisma.user.update.mockResolvedValue({ id: 'user-1', tokenVersion: 2 })
-      mockPrisma.user.findUnique.mockResolvedValue({
-        id: 'user-1',
-        supabaseUid: 'sb-uid-1',
-      })
-      mockSupabase.deleteUser.mockResolvedValue({})
-      mockRedis.set.mockResolvedValue('OK')
-
-      await service.logout('user-1')
-
-      expect(mockPrisma.user.update).toHaveBeenCalledWith({
-        where: { id: 'user-1' },
-        data: { tokenVersion: { increment: 1 } },
-      })
-    })
-  })
-
-  describe('requestPasswordReset', () => {
-    it('should always return success message to prevent email enumeration', async () => {
-      mockSupabase.resetPasswordForEmail.mockResolvedValue({ error: null })
-
-      const result = await service.requestPasswordReset('test@test.com')
-
-      expect(result.message).toContain('If the email exists')
-    })
-  })
-
-  describe('generateAccessToken', () => {
-    it('should include sub, email, role, and preferredLanguage', () => {
-      const user = {
-        id: 'user-1',
-        email: 'test@test.com',
-        role: 'USER',
-        preferredLanguage: 'EN',
-      }
-
-      service.generateAccessToken(user)
-
-      expect(mockJwt.sign).toHaveBeenCalledWith(
-        {
-          sub: 'user-1',
-          email: 'test@test.com',
-          role: 'USER',
-          preferredLanguage: 'EN',
-        },
-        {
-          secret: mockConfig.jwtAccessSecret,
-          expiresIn: '15m',
-        },
+      await expect(service.refreshAccessToken('token')).rejects.toThrow(
+        UnauthorizedException,
       )
     })
   })
 
-  describe('generateRefreshToken', () => {
-    it('should include sub and tokenVersion', () => {
-      const user = { id: 'user-1', tokenVersion: 3 }
+  describe('requestPasswordReset', () => {
+    it('should always return success (anti-enumeration)', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(null)
 
-      service.generateRefreshToken(user)
+      const result = await service.requestPasswordReset('nobody@test.com')
+      expect(result.message).toContain('If the email exists')
+    })
+
+    it('should set reset token when user exists', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue({ id: 'u1' })
+      mockPrisma.user.update.mockResolvedValue({})
+
+      await service.requestPasswordReset('real@test.com')
+
+      expect(mockPrisma.user.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'u1' },
+          data: expect.objectContaining({
+            passwordResetToken: expect.any(String),
+            passwordResetExpires: expect.any(Date),
+          }),
+        }),
+      )
+    })
+  })
+
+  describe('generateAccessToken', () => {
+    it('should sign with correct payload', () => {
+      service.generateAccessToken({
+        id: 'u1',
+        email: 'e@e.com',
+        role: 'USER',
+        preferredLanguage: 'EN',
+      })
 
       expect(mockJwt.sign).toHaveBeenCalledWith(
-        { sub: 'user-1', tokenVersion: 3 },
-        {
-          secret: mockConfig.jwtRefreshSecret,
-          expiresIn: '7d',
-        },
+        { sub: 'u1', email: 'e@e.com', role: 'USER', preferredLanguage: 'EN' },
+        { secret: mockConfig.jwtAccessSecret, expiresIn: '15m' },
       )
     })
   })

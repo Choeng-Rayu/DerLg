@@ -6,7 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs}": [
+      "eslint --fix"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -20,6 +32,7 @@
     "dompurify": "^3.4.2",
     "idb": "^8.0.3",
     "js-cookie": "^3.0.5",
+    "leaflet": "^1.9.4",
     "lucide-react": "^1.14.0",
     "next": "16.1.6",
     "next-intl": "^4.11.0",
@@ -28,11 +41,13 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.75.0",
+    "react-leaflet": "^5.0.0",
     "tailwind-merge": "^3.5.0",
     "zod": "^4.4.2",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -49,6 +64,7 @@
     "lint-staged": "^16.4.0",
     "msw": "^2.14.2",
     "playwright": "^1.59.1",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4.2.1",
     "typescript": "^5",
     "vitest": "^4.1.5"
