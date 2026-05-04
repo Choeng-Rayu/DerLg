@@ -162,10 +162,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware - Allow connections from frontend domains
+# CORS middleware - Allow connections from configured origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://derlg.com", "https://www.derlg.com"],
+    allow_origins=[o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

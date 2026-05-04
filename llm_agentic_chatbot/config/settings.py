@@ -5,9 +5,11 @@ This module provides centralized configuration management using Pydantic BaseSet
 All environment variables are validated on startup with clear error messages.
 
 Environment Variables:
-    MODEL_BACKEND: LLM backend to use ("anthropic" or "ollama")
+    MODEL_BACKEND: LLM backend to use ("anthropic", "ollama", or "nvidia")
     ANTHROPIC_API_KEY: Anthropic API key (required when MODEL_BACKEND=anthropic)
     OLLAMA_BASE_URL: Ollama server URL (required when MODEL_BACKEND=ollama)
+    NVIDIA_API_KEY: NVIDIA API key (required when MODEL_BACKEND=nvidia)
+    LLM_MODEL_SELECTED: Model name override (default: openai/gpt-oss-120b)
     BACKEND_URL: NestJS backend base URL
     AI_SERVICE_KEY: Service authentication key (min 32 characters)
     REDIS_URL: Redis connection string
@@ -48,9 +50,9 @@ class Settings(BaseSettings):
     )
     
     # Model Backend Configuration
-    MODEL_BACKEND: Literal["anthropic", "ollama"] = Field(
+    MODEL_BACKEND: Literal["anthropic", "ollama", "nvidia"] = Field(
         ...,
-        description="LLM backend to use: 'anthropic' for Claude API or 'ollama' for local models"
+        description="LLM backend to use: 'anthropic' for Claude API, 'ollama' for local models, or 'nvidia' for NVIDIA API"
     )
     ANTHROPIC_API_KEY: Optional[str] = Field(
         default=None,
@@ -59,6 +61,14 @@ class Settings(BaseSettings):
     OLLAMA_BASE_URL: Optional[str] = Field(
         default=None,
         description="Ollama server base URL (required when MODEL_BACKEND=ollama)"
+    )
+    NVIDIA_API_KEY: Optional[str] = Field(
+        default=None,
+        description="NVIDIA API key (required when MODEL_BACKEND=nvidia)"
+    )
+    LLM_MODEL_SELECTED: Optional[str] = Field(
+        default="openai/gpt-oss-120b",
+        description="LLM model name to use (applicable for nvidia backend)"
     )
     
     # Backend API Configuration
@@ -82,6 +92,12 @@ class Settings(BaseSettings):
     SENTRY_DSN: Optional[str] = Field(
         default=None,
         description="Sentry DSN for error tracking (optional)"
+    )
+    
+    # CORS Configuration
+    ALLOWED_ORIGINS: str = Field(
+        default="https://derlg.com,https://www.derlg.com",
+        description="Comma-separated list of allowed CORS origins"
     )
     
     # Pydantic Settings Configuration
@@ -139,6 +155,31 @@ class Settings(BaseSettings):
                 "OLLAMA_BASE_URL is required when MODEL_BACKEND=ollama. "
                 "Please set OLLAMA_BASE_URL in your environment or .env file. "
                 "Example: http://localhost:11434"
+            )
+        return v
+    
+    @field_validator("NVIDIA_API_KEY")
+    @classmethod
+    def validate_nvidia_key(cls, v: Optional[str], info) -> Optional[str]:
+        """
+        Validate that NVIDIA_API_KEY is provided when MODEL_BACKEND=nvidia.
+        
+        Args:
+            v: The NVIDIA_API_KEY value
+            info: Validation context containing other field values
+            
+        Returns:
+            The validated API key
+            
+        Raises:
+            ValueError: If MODEL_BACKEND=nvidia but NVIDIA_API_KEY is missing
+        """
+        model_backend = info.data.get("MODEL_BACKEND")
+        if model_backend == "nvidia" and not v:
+            raise ValueError(
+                "NVIDIA_API_KEY is required when MODEL_BACKEND=nvidia. "
+                "Please set NVIDIA_API_KEY in your environment or .env file. "
+                "Get your API key from: https://build.nvidia.com/"
             )
         return v
     
