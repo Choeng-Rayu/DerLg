@@ -1,0 +1,641 @@
+// DerLg.com — Complete Prisma Schema
+// All 18 models + enums + indexes + relations
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPPORT
+}
+
+enum Language {
+  EN
+  KH
+  ZH
+}
+
+enum Environment {
+  MOUNTAIN
+  BEACH
+  CITY
+  FOREST
+  ISLAND
+  TEMPLE
+}
+
+enum BookingType {
+  PACKAGE
+  HOTEL_ONLY
+  TRANSPORT_ONLY
+  GUIDE_ONLY
+}
+
+enum BookingStatus {
+  PENDING
+  RESERVED
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  CARD
+  QR_CODE
+  BAKONG_QR
+  PAYPAL
+}
+
+enum VehicleCategory {
+  VAN
+  BUS
+  TUK_TUK
+}
+
+enum VehicleTier {
+  STANDARD
+  VIP
+}
+
+enum RoomType {
+  SINGLE
+  DOUBLE
+  TWIN
+  SUITE
+}
+
+enum AlertType {
+  SOS
+  MEDICAL
+  THEFT
+  LOST
+}
+
+enum AlertStatus {
+  SENT
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum NotificationType {
+  BOOKING_CONFIRM
+  REMINDER
+  FESTIVAL_ALERT
+  PAYMENT
+  EMERGENCY
+  REFUND
+  CANCELLATION
+}
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+  SMS
+}
+
+enum LoyaltyTransactionType {
+  EARNED
+  REDEEMED
+  EXPIRED
+  ADJUSTED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum PlaceCategory {
+  TEMPLE
+  MUSEUM
+  NATURE
+  MARKET
+  BEACH
+  MOUNTAIN
+}
+
+enum ReviewSubjectType {
+  TRIP
+  HOTEL
+  GUIDE
+  VEHICLE
+}
+
+// ============================================================
+// MODELS
+// ============================================================
+
+// 1. users
+model User {
+  id                    String    @id @default(uuid())
+  supabaseUid           String    @unique @map("supabase_uid")
+  name                  String    @db.VarChar(100)
+  email                 String    @unique
+  phone                 String?   @db.VarChar(20)
+  avatarUrl             String?   @map("avatar_url")
+  role                  UserRole  @default(USER)
+  preferredLanguage     String    @default("EN") @map("preferred_language") @db.VarChar(5)
+  loyaltyPoints         Int       @default(0) @map("loyalty_points")
+  isStudent             Boolean   @default(false) @map("is_student")
+  studentVerifiedAt     DateTime? @map("student_verified_at") @db.Timestamptz()
+  emergencyContactName  String?   @map("emergency_contact_name") @db.VarChar(100)
+  emergencyContactPhone String?   @map("emergency_contact_phone") @db.VarChar(20)
+  tokenVersion          Int       @default(0) @map("token_version")
+  referralCode          String?   @unique @map("referral_code") @db.VarChar(20)
+  referredById          String?   @map("referred_by_id")
+  referredBy            User?     @relation("UserReferrals", fields: [referredById], references: [id])
+  referrals             User[]    @relation("UserReferrals")
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  bookings              Booking[]
+  payments              Payment[]             @relation("UserPayments")
+  reviews               Review[]
+  guide                 Guide?
+  loyaltyTransactions   LoyaltyTransaction[]
+  emergencyAlerts       EmergencyAlert[]
+  studentVerifications  StudentVerification[] @relation("StudentUser")
+  reviewedVerifications StudentVerification[] @relation("ReviewerUser")
+  notifications         Notification[]
+  aiSessions            AISession[]
+
+  @@index([email])
+  @@index([supabaseUid])
+  @@index([referralCode])
+  @@map("users")
+}
+
+// 2. trips
+model Trip {
+  id                  String      @id @default(uuid())
+  title               String      @db.VarChar(200)
+  titleKh             String?     @map("title_kh") @db.VarChar(200)
+  titleZh             String?     @map("title_zh") @db.VarChar(200)
+  slug                String      @unique @db.VarChar(200)
+  description         String?
+  descriptionKh       String?     @map("description_kh")
+  descriptionZh       String?     @map("description_zh")
+  destination         String      @db.VarChar(100)
+  province            String?     @db.VarChar(100)
+  durationDays        Int         @map("duration_days")
+  pricePerPersonUsd   Decimal     @map("price_per_person_usd") @db.Decimal(10, 2)
+  environment         Environment
+  moodTags            String[]    @map("mood_tags")
+  includes            Json?
+  excludes            Json?
+  itinerary           Json?
+  highlights          String[]
+  minPeople           Int         @default(1) @map("min_people")
+  maxPeople           Int         @default(20) @map("max_people")
+  cancellationPolicy  Json?       @map("cancellation_policy")
+  imageUrls           String[]    @map("image_urls")
+  avgRating           Decimal?    @map("avg_rating") @db.Decimal(3, 2)
+  totalReviews        Int         @default(0) @map("total_reviews")
+  hotelId             String?     @map("hotel_id")
+  hotel               Hotel?      @relation(fields: [hotelId], references: [id])
+  transportType       VehicleCategory? @map("transport_type")
+  isActive            Boolean     @default(true) @map("is_active")
+  createdAt           DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt           DateTime    @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  bookings            Booking[]
+
+  @@index([isActive])
+  @@index([environment])
+  @@index([province])
+  @@index([slug])
+  @@map("trips")
+}
+
+// 3. places
+model Place {
+  id                  String        @id @default(uuid())
+  name                String        @db.VarChar(200)
+  nameKh              String?       @map("name_kh") @db.VarChar(200)
+  nameZh              String?       @map("name_zh") @db.VarChar(200)
+  province            String        @db.VarChar(100)
+  category            PlaceCategory
+  description         String?
+  descriptionKh       String?       @map("description_kh")
+  descriptionZh       String?       @map("description_zh")
+  visitorTips         String?       @map("visitor_tips")
+  dressCode           String?       @map("dress_code")
+  entryFeeUsd         Decimal?      @map("entry_fee_usd") @db.Decimal(8, 2)
+  openingHours        Json?         @map("opening_hours")
+  latitude            Decimal       @db.Decimal(9, 6)
+  longitude           Decimal       @db.Decimal(9, 6)
+  imageUrls           String[]      @map("image_urls")
+  isOfflineAvailable  Boolean       @default(false) @map("is_offline_available")
+  createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt           DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  festivals           Festival[]
+
+  @@index([province])
+  @@index([category])
+  @@map("places")
+}
+
+// 4. hotels
+model Hotel {
+  id                  String     @id @default(uuid())
+  name                String     @db.VarChar(200)
+  province            String     @db.VarChar(100)
+  address             String?
+  starRating          Int        @map("star_rating")
+  latitude            Decimal?   @db.Decimal(9, 6)
+  longitude           Decimal?   @db.Decimal(9, 6)
+  imageUrls           String[]   @map("image_urls")
+  amenities           String[]
+  checkInTime         String?    @map("check_in_time") @db.VarChar(10)
+  checkOutTime        String?    @map("check_out_time") @db.VarChar(10)
+  cancellationPolicy  Json?      @map("cancellation_policy")
+  isActive            Boolean    @default(true) @map("is_active")
+  createdAt           DateTime   @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt           DateTime   @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  rooms               HotelRoom[]
+  trips               Trip[]
+
+  @@index([province])
+  @@index([isActive])
+  @@map("hotels")
+}
+
+// 5. hotel_rooms
+model HotelRoom {
+  id                  String    @id @default(uuid())
+  hotelId             String    @map("hotel_id")
+  hotel               Hotel     @relation(fields: [hotelId], references: [id])
+  roomType            RoomType  @map("room_type")
+  bedrooms            Int       @default(1)
+  capacity            Int
+  pricePerNightUsd    Decimal   @map("price_per_night_usd") @db.Decimal(10, 2)
+  amenities           String[]
+  imageUrls           String[]  @map("image_urls")
+  totalRooms          Int       @map("total_rooms")
+  isActive            Boolean   @default(true) @map("is_active")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt           DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  bookings            Booking[]
+
+  @@index([hotelId])
+  @@index([roomType])
+  @@map("hotel_rooms")
+}
+
+// 6. transportation_vehicles
+model TransportationVehicle {
+  id              String          @id @default(uuid())
+  category        VehicleCategory
+  model           String          @db.VarChar(100)
+  tier            VehicleTier     @default(STANDARD)
+  seatCapacity    Int             @map("seat_capacity")
+  pricePerDayUsd  Decimal         @map("price_per_day_usd") @db.Decimal(10, 2)
+  pricePerKmUsd   Decimal?        @map("price_per_km_usd") @db.Decimal(8, 4)
+  imageUrls       String[]        @map("image_urls")
+  features        String[]
+  isActive        Boolean         @default(true) @map("is_active")
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  bookings        Booking[]
+
+  @@index([category])
+  @@index([isActive])
+  @@map("transportation_vehicles")
+}
+
+// 7. guides
+model Guide {
+  id                String   @id @default(uuid())
+  userId            String   @unique @map("user_id")
+  user              User     @relation(fields: [userId], references: [id])
+  languages         String[]
+  bio               String?
+  bioKh             String?  @map("bio_kh")
+  bioZh             String?  @map("bio_zh")
+  specialties       String[]
+  pricePerDayUsd    Decimal  @map("price_per_day_usd") @db.Decimal(10, 2)
+  yearsExperience   Int      @map("years_experience")
+  certifications    String[]
+  profileImageUrl   String?  @map("profile_image_url")
+  avgRating         Decimal? @map("avg_rating") @db.Decimal(3, 2)
+  totalReviews      Int      @default(0) @map("total_reviews")
+  isVerified        Boolean  @default(false) @map("is_verified")
+  isAvailable       Boolean  @default(true) @map("is_available")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  bookings          Booking[]
+
+  @@index([isVerified])
+  @@index([isAvailable])
+  @@map("guides")
+}
+
+// 8. bookings
+model Booking {
+  id                     String        @id @default(uuid())
+  bookingRef             String        @unique @map("booking_ref") @db.VarChar(15)
+  userId                 String        @map("user_id")
+  user                   User          @relation(fields: [userId], references: [id])
+  tripId                 String?       @map("trip_id")
+  trip                   Trip?         @relation(fields: [tripId], references: [id])
+  hotelRoomId            String?       @map("hotel_room_id")
+  hotelRoom              HotelRoom?    @relation(fields: [hotelRoomId], references: [id])
+  vehicleId              String?       @map("vehicle_id")
+  vehicle                TransportationVehicle? @relation(fields: [vehicleId], references: [id])
+  guideId                String?       @map("guide_id")
+  guide                  Guide?        @relation(fields: [guideId], references: [id])
+  status                 BookingStatus @default(RESERVED)
+  bookingType            BookingType   @map("booking_type")
+  travelDate             DateTime      @map("travel_date") @db.Date
+  endDate                DateTime?     @map("end_date") @db.Date
+  numAdults              Int           @default(1) @map("num_adults")
+  numChildren            Int           @default(0) @map("num_children")
+  pickupLocation         String?       @map("pickup_location")
+  specialRequests        String?       @map("special_requests")
+  customizations         Json?
+  subtotalUsd            Decimal       @map("subtotal_usd") @db.Decimal(10, 2)
+  discountAmountUsd      Decimal       @default(0) @map("discount_amount_usd") @db.Decimal(10, 2)
+  loyaltyDiscountUsd     Decimal       @default(0) @map("loyalty_discount_usd") @db.Decimal(10, 2)
+  totalUsd               Decimal       @map("total_usd") @db.Decimal(10, 2)
+  loyaltyPointsEarned    Int           @default(0) @map("loyalty_points_earned")
+  loyaltyPointsUsed      Int           @default(0) @map("loyalty_points_used")
+  studentDiscountApplied Boolean       @default(false) @map("student_discount_applied")
+  discountCodeId         String?       @map("discount_code_id")
+  discountCode           DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  reservedUntil          DateTime?     @map("reserved_until") @db.Timestamptz()
+  cancellationReason     String?       @map("cancellation_reason")
+  createdAt              DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt              DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  payments               Payment[]
+  reviews                Review[]
+  loyaltyTransactions    LoyaltyTransaction[]
+  aiSessions             AISession[]
+
+  @@index([userId])
+  @@index([bookingRef])
+  @@index([status])
+  @@index([travelDate])
+  @@map("bookings")
+}
+
+// 9. payments
+model Payment {
+  id                      String        @id @default(uuid())
+  bookingId               String        @map("booking_id")
+  booking                 Booking       @relation(fields: [bookingId], references: [id])
+  userId                  String        @map("user_id")
+  user                    User          @relation("UserPayments", fields: [userId], references: [id])
+  stripePaymentIntentId   String        @unique @map("stripe_payment_intent_id")
+  stripeChargeId          String?       @map("stripe_charge_id")
+  stripeEventId           String?       @unique @map("stripe_event_id")
+  amountUsd               Decimal       @map("amount_usd") @db.Decimal(10, 2)
+  currency                String        @default("USD") @db.VarChar(3)
+  status                  PaymentStatus @default(PENDING)
+  paymentMethod           PaymentMethod? @map("payment_method")
+  qrCodeUrl               String?       @map("qr_code_url")
+  paidAt                  DateTime?     @map("paid_at") @db.Timestamptz()
+  refundedAt              DateTime?     @map("refunded_at") @db.Timestamptz()
+  refundAmountUsd         Decimal?      @map("refund_amount_usd") @db.Decimal(10, 2)
+  refundReason            String?       @map("refund_reason")
+  failureCode             String?       @map("failure_code") @db.VarChar(50)
+  failureMessage          String?       @map("failure_message")
+  createdAt               DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([bookingId])
+  @@index([userId])
+  @@index([status])
+  @@map("payments")
+}
+
+// 10. reviews
+model Review {
+  id            String            @id @default(uuid())
+  bookingId     String            @map("booking_id")
+  booking       Booking           @relation(fields: [bookingId], references: [id])
+  userId        String            @map("user_id")
+  user          User              @relation(fields: [userId], references: [id])
+  subjectType   ReviewSubjectType @map("subject_type")
+  subjectId     String            @map("subject_id")
+  rating        Int
+  comment       String?           @db.VarChar(1000)
+  imageUrls     String[]          @map("image_urls")
+  isVerified    Boolean           @default(true) @map("is_verified")
+  isVisible     Boolean           @default(true) @map("is_visible")
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt     DateTime          @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@unique([bookingId, subjectType, subjectId])
+  @@index([subjectType, subjectId])
+  @@index([userId])
+  @@map("reviews")
+}
+
+// 11. festivals
+model Festival {
+  id              String    @id @default(uuid())
+  name            String    @db.VarChar(200)
+  nameKh          String?   @map("name_kh") @db.VarChar(200)
+  nameZh          String?   @map("name_zh") @db.VarChar(200)
+  province        String?   @db.VarChar(100)
+  startDate       DateTime  @map("start_date") @db.Date
+  endDate         DateTime  @map("end_date") @db.Date
+  description     String?
+  descriptionKh   String?   @map("description_kh")
+  descriptionZh   String?   @map("description_zh")
+  placeId         String?   @map("place_id")
+  place           Place?    @relation(fields: [placeId], references: [id])
+  imageUrl        String?   @map("image_url")
+  hasDiscount     Boolean   @default(false) @map("has_discount")
+  discountPercent Int?      @map("discount_percent")
+  isActive        Boolean   @default(true) @map("is_active")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  discountCodes   DiscountCode[]
+
+  @@index([startDate])
+  @@index([isActive])
+  @@map("festivals")
+}
+
+// 12. discount_codes
+model DiscountCode {
+  id              String       @id @default(uuid())
+  code            String       @unique @db.VarChar(20)
+  discountType    DiscountType @map("discount_type")
+  discountValue   Decimal      @map("discount_value") @db.Decimal(10, 2)
+  minBookingUsd   Decimal?     @map("min_booking_usd") @db.Decimal(10, 2)
+  validFrom       DateTime     @map("valid_from") @db.Timestamptz()
+  validUntil      DateTime     @map("valid_until") @db.Timestamptz()
+  maxUses         Int?         @map("max_uses")
+  currentUses     Int          @default(0) @map("current_uses")
+  festivalId      String?      @map("festival_id")
+  festival        Festival?    @relation(fields: [festivalId], references: [id])
+  bookingType     BookingType? @map("booking_type")
+  isActive        Boolean      @default(true) @map("is_active")
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relations
+  bookings        Booking[]
+
+  @@index([code])
+  @@index([isActive])
+  @@map("discount_codes")
+}
+
+// 13. loyalty_transactions
+model LoyaltyTransaction {
+  id            String                 @id @default(uuid())
+  userId        String                 @map("user_id")
+  user          User                   @relation(fields: [userId], references: [id])
+  bookingId     String?                @map("booking_id")
+  booking       Booking?               @relation(fields: [bookingId], references: [id])
+  type          LoyaltyTransactionType
+  points        Int
+  description   String?
+  balanceAfter  Int                    @map("balance_after")
+  createdAt     DateTime               @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([userId])
+  @@index([bookingId])
+  @@map("loyalty_transactions")
+}
+
+// 14. emergency_alerts
+model EmergencyAlert {
+  id                  String      @id @default(uuid())
+  userId              String      @map("user_id")
+  user                User        @relation(fields: [userId], references: [id])
+  alertType           AlertType   @map("alert_type")
+  latitude            Decimal     @db.Decimal(9, 6)
+  longitude           Decimal     @db.Decimal(9, 6)
+  locationAccuracyM   Int?        @map("location_accuracy_m")
+  message             String?
+  status              AlertStatus @default(SENT)
+  respondedAt         DateTime?   @map("responded_at") @db.Timestamptz()
+  resolvedAt          DateTime?   @map("resolved_at") @db.Timestamptz()
+  createdAt           DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([userId])
+  @@index([status])
+  @@map("emergency_alerts")
+}
+
+// 15. student_verifications
+model StudentVerification {
+  id                   String             @id @default(uuid())
+  userId               String             @map("user_id")
+  user                 User               @relation("StudentUser", fields: [userId], references: [id])
+  studentIdImageUrl    String             @map("student_id_image_url")
+  faceSelfieUrl        String?            @map("face_selfie_url")
+  institutionName      String             @map("institution_name") @db.VarChar(200)
+  status               VerificationStatus @default(PENDING)
+  reviewedBy           String?            @map("reviewed_by")
+  reviewer             User?              @relation("ReviewerUser", fields: [reviewedBy], references: [id])
+  rejectionReason      String?            @map("rejection_reason")
+  expiresAt            DateTime?          @map("expires_at") @db.Date
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt            DateTime           @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@index([userId])
+  @@index([status])
+  @@map("student_verifications")
+}
+
+// 16. notifications
+model Notification {
+  id            String              @id @default(uuid())
+  userId        String              @map("user_id")
+  user          User                @relation(fields: [userId], references: [id])
+  type          NotificationType
+  channel       NotificationChannel
+  title         String
+  body          String
+  data          Json?
+  isRead        Boolean             @default(false) @map("is_read")
+  status        String              @default("sent") @db.VarChar(20)
+  sentAt        DateTime?           @map("sent_at") @db.Timestamptz()
+  deliveredAt   DateTime?           @map("delivered_at") @db.Timestamptz()
+  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+// 17. ai_sessions
+model AISession {
+  id            String   @id @default(uuid())
+  sessionId     String   @unique @map("session_id")
+  userId        String?  @map("user_id")
+  user          User?    @relation(fields: [userId], references: [id])
+  state         String?  @db.VarChar(50)
+  bookingId     String?  @map("booking_id")
+  booking       Booking? @relation(fields: [bookingId], references: [id])
+  messageCount  Int      @default(0) @map("message_count")
+  lastActive    DateTime @map("last_active") @db.Timestamptz()
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([userId])
+  @@index([sessionId])
+  @@map("ai_sessions")
+}
+
+// 18. audit_logs
+model AuditLog {
+  id            String   @id @default(uuid())
+  userId        String?  @map("user_id")
+  action        String   @db.VarChar(10)
+  resource      String
+  requestBody   Json?    @map("request_body")
+  ipAddress     String?  @map("ip_address") @db.VarChar(50)
+  result        String   @db.VarChar(20)
+  errorMessage  String?  @map("error_message")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
