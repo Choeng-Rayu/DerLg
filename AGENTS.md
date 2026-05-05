@@ -1,375 +1,165 @@
-# DerLg.com — Agent Development Guide
+# CLAUDE.md
 
-This document provides essential information for AI coding agents working in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
-DerLg is a full-stack travel booking platform for Cambodia with three main services:
-- **Backend**: NestJS 11 (TypeScript) - REST API server
-- **Frontend**: Next.js 16 (TypeScript) - Mobile-first PWA
-- **LLM Agentic Chatbot**: FastAPI (Python 3.11+) - AI conversation agent
+DerLg.com is a Cambodia travel booking platform with four services:
 
----
+| Service | Stack | Port | Deploy |
+|---------|-------|------|--------|
+| `frontend/` | Next.js 16 (App Router), React 19, Tailwind v4, TypeScript | 3000 | Vercel |
+| `frontend_react/` | React 19, Vite, TypeScript | 5173 | TBD |
+| `backend/` | NestJS 11 (ESM), Prisma 5, PostgreSQL (Supabase), Redis (Upstash) | 3001 | Railway |
+| `llm_agentic_chatbot/` | Python FastAPI + LangGraph, Claude/NVIDIA/Ollama | 8000 | Railway |
 
-## Build, Lint, and Test Commands
+The Next.js frontend (`frontend/`) is the primary target. `frontend_react/` is an alternative Vite-based SPA. Both communicate with the backend via REST; the AI agent is reached via WebSocket.
 
-### Backend (NestJS)
-
-```bash
-cd backend
-
-# Development
-npm run start:dev          # Start with hot-reload
-npm run start:debug        # Start with debugger
-
-# Build
-npm run build              # Production build
-
-# Linting & Formatting
-npm run lint               # ESLint with auto-fix
-npm run format             # Prettier formatting
-
-# Testing
-npm run test               # Run all unit tests
-npm run test:watch         # Run tests in watch mode
-npm run test:cov           # Run with coverage report
-npm run test:e2e           # Run E2E tests
-npm run test:debug         # Debug tests
-
-# Run single test file
-npm run test -- app.controller.spec.ts
-npm run test:e2e -- app.e2e-spec.ts
-```
+## Commands
 
 ### Frontend (Next.js)
-
 ```bash
 cd frontend
-
-# Development
-npm run dev                # Start dev server (port 3000)
-
-# Build
-npm run build              # Production build
-npm run start              # Serve production build
-
-# Linting
-npm run lint               # ESLint check
-
-# Note: No test framework currently configured
+npm run dev          # Development server
+npm run build        # Production build
+npm run lint         # ESLint
+npm run test         # Vitest run
+npm run test:watch   # Vitest watch mode
+npm run test:e2e     # Playwright
 ```
 
-### LLM Agentic Chatbot (Python/FastAPI)
+### Frontend (React + Vite)
+```bash
+cd frontend_react
+npm run dev          # Vite dev server
+npm run build        # tsc + vite build
+npm run lint         # ESLint
+```
 
+### Backend
+```bash
+cd backend
+npm run start:dev    # Watch mode
+npm run build        # nest build
+npm run lint         # ESLint with auto-fix
+npm run test         # Jest
+npm run test:watch   # Jest watch
+npm run test:e2e     # E2E tests
+npm run test:cov     # Coverage
+npm run db:migrate   # Prisma migrate dev
+npm run db:push      # Prisma db push
+npm run db:seed      # Prisma db seed
+npm run db:studio    # Prisma Studio
+npm run db:reset     # Prisma migrate reset
+npm run prisma:merge # Merge split Prisma schemas (custom script)
+```
+
+### AI Agent
 ```bash
 cd llm_agentic_chatbot
-
-# Development
-python main.py             # Start FastAPI server
-# or
-uvicorn main:app --reload --port 8000
-
-# Testing
-pytest                     # Run all tests
-pytest tests/unit/         # Run unit tests only
-pytest tests/integration/  # Run integration tests only
-pytest tests/property/     # Run property-based tests
-pytest -v                  # Verbose output
-pytest -k test_name        # Run specific test
-pytest --cov               # Run with coverage
-
-# Code Quality
-black .                    # Format code
-pylint **/*.py             # Lint code
-mypy .                     # Type checking
-
-# Run single test
-pytest tests/unit/test_settings.py
-pytest tests/unit/test_settings.py::test_function_name
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # Development
+pytest                                                  # Tests (requires SKIP_SETTINGS_INIT=1)
+docker-compose up                                       # Full dev environment
 ```
 
----
+## Architecture
 
-## Code Style Guidelines
+### Backend (NestJS)
+Feature-based module structure under `backend/src/`. All REST routes are versioned at `/v1/`. AI agent tool endpoints live at `/v1/ai-tools/` protected by `ServiceKeyGuard` (requires `X-Service-Key` header).
 
-### Backend (TypeScript/NestJS)
+The backend is configured as **ESM** (`"type": "module"` in package.json). The `prisma/schema.prisma` defines 18 tables. Booking holds use Redis with a 15-minute TTL. JWT auth uses httpOnly cookies only — never localStorage.
 
-#### Imports
-```typescript
-// Order: external → @nestjs → internal
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { UserService } from './user.service';
+### Frontend (Next.js)
+App Router with Server Components by default. State is split:
+- **Zustand** (`stores/`) — client state: auth, active booking flow, chat, language
+- **React Query** (`lib/api.ts`) — server/cached state: API responses
+- **React Hook Form + Zod** — form validation
+
+Five main screens: home, explore, booking, my-trips, profile. Plus a separate AI chat interface (`app/chat/`). i18n supports EN/KH/ZH via `next-intl`.
+
+There is no `.env.example` in `frontend/` or `frontend_react/` — required variables are documented in their respective READMEs.
+
+### AI Agent (Python)
+LangGraph state machine with 7 conversation stages:
+```
+DISCOVERY -> SUGGESTION -> EXPLORATION -> CUSTOMIZATION -> BOOKING -> PAYMENT -> POST_BOOKING
+```
+20 tool implementations in `agent/tools/`. Session state persists in Redis with 7-day TTL. The agent calls backend REST endpoints as tools using `AI_SERVICE_KEY`.
+
+The agent supports three LLM backends: `anthropic` (Claude), `ollama` (local), and `nvidia` (NVIDIA API). Backend selection is controlled by `MODEL_BACKEND` and `LLM_MODEL_SELECTED`.
+
+## Key Conventions
+
+- **API versioning:** all backend routes use `/v1/` prefix
+- **Auth:** Supabase Auth + JWT in httpOnly cookies; backend uses `ServiceKeyGuard` for AI-agent-to-backend calls
+- **TypeScript strict mode** in both frontend and backend
+- **Python:** Black formatting, Pylint, mypy strict — configured in `pyproject.toml`
+- **Backend ESM:** all backend code runs as ES modules; use `import` syntax
+- **Environment:** each service has its own `.env.example` (except frontends); copy to `.env` before running
+
+## Environment Setup
+
+```bash
+cp backend/.env.example backend/.env
+cp llm_agentic_chatbot/.env.example llm_agentic_chatbot/.env
 ```
 
-#### Formatting (Prettier + ESLint)
-- **Single quotes** for strings: `'hello'` not `"hello"`
-- **Trailing commas** everywhere (ES5+)
-- **No semicolons** (automatic)
-- **2 spaces** indentation
-- Files must end with a newline
+Key backend variables:
+- `DATABASE_URL` / `DIRECT_URL` — Supabase PostgreSQL
+- `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` — min 32 chars each
+- `REDIS_URL` — Redis connection
+- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — Upstash Redis (if used)
+- `AI_SERVICE_KEY` — shared secret between backend and AI agent (min 16 chars)
+- `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` — payments
+- `CORS_ORIGINS` — comma-separated allowed origins
 
-#### Types & Naming
-```typescript
-// Use PascalCase for classes, interfaces, types, enums
-export class TripService {}
-export interface BookingDto {}
-export type PaymentStatus = 'pending' | 'completed';
+Key AI agent variables:
+- `MODEL_BACKEND` — `anthropic`, `ollama`, or `nvidia`
+- `ANTHROPIC_API_KEY` — required when `MODEL_BACKEND=anthropic`
+- `NVIDIA_API_KEY` — required when `MODEL_BACKEND=nvidia`
+- `LLM_MODEL_SELECTED` — model name (default: `openai/gpt-oss-120b`)
+- `BACKEND_URL` — NestJS base URL (no trailing slash)
+- `AI_SERVICE_KEY` — shared secret (min 32 chars)
+- `REDIS_URL` — session storage
+- `ALLOWED_ORIGINS` — CORS origins
+- `WS_PING_INTERVAL` / `WS_TIMEOUT` / `MAX_CONNECTIONS` — WebSocket tuning
 
-// Use camelCase for variables, functions, methods
-const userId = 123;
-async function createBooking() {}
+Key frontend variables (see `frontend/README.md`):
+- `NEXT_PUBLIC_API_URL` — backend base URL
+- `NEXT_PUBLIC_WS_URL` — AI agent WebSocket URL
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` — Stripe public key
 
-// Use SCREAMING_SNAKE_CASE for constants
-const MAX_BOOKING_DAYS = 30;
+## Testing Notes
 
-// Disable `any` is allowed (eslint rule off) but avoid when possible
-// Prefer explicit types or use `unknown` for truly unknown data
-```
+- **Backend tests:** standard Jest. Run single test file: `npx jest src/auth/auth.service.spec.ts`
+- **AI agent tests:** always prefix with `SKIP_SETTINGS_INIT=1` to bypass Pydantic settings validation during test collection:
+  ```bash
+  SKIP_SETTINGS_INIT=1 pytest
+  SKIP_SETTINGS_INIT=1 pytest -m unit
+  SKIP_SETTINGS_INIT=1 pytest tests/unit/test_tool_schemas.py
+  ```
+- **Frontend tests:** Vitest for unit, Playwright for E2E.
 
-#### Error Handling
-```typescript
-// Use NestJS built-in exceptions
-throw new NotFoundException('Trip not found');
-throw new BadRequestException('Invalid booking date');
-throw new UnauthorizedException('Service key required');
+## Permanent Project Memory
 
-// For custom errors, extend HttpException
-export class InsufficientFundsException extends HttpException {
-  constructor() {
-    super('Insufficient funds', HttpStatus.PAYMENT_REQUIRED);
-  }
-}
-```
+Detailed feature specs, architecture decisions, and build order are in:
+- `docs/` — architecture documents and feature specs (F01–F16)
+- `.github/instructions/derlg.instructions.md` — main project memory
+- `.claude/agents/DerLgClaude.agent.md` — agent-specific instructions
 
-#### Async/Await
-- Always use `async/await` over raw promises
-- ESLint warns on floating promises (unawaited async calls)
+## Documentation Reference
 
----
-
-### Frontend (TypeScript/Next.js)
-
-#### Imports
-```typescript
-// Order: react → next → external → components → lib → types
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { Button } from '@/components/ui/button';
-import { api } from '@/lib/api';
-```
-
-#### Component Structure
-```typescript
-// Prefer named exports for consistency
-export function HomePage() {
-  return <div>Content</div>;
-}
-
-// Use default export only for pages (Next.js requirement)
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html>{children}</html>;
-}
-```
-
-#### Types
-```typescript
-// Define prop types inline for simple components
-export function UserCard({ name, age }: { name: string; age: number }) {}
-
-// Extract to interface for complex types
-interface BookingCardProps {
-  booking: Booking;
-  onCancel: () => void;
-}
-
-export function BookingCard({ booking, onCancel }: BookingCardProps) {}
-```
-
-#### Naming Conventions
-- **Components**: PascalCase (e.g., `BookingCard.tsx`)
-- **Hooks**: camelCase with `use` prefix (e.g., `useAuth.ts`)
-- **Utilities**: camelCase (e.g., `formatCurrency.ts`)
-- **Stores**: camelCase with `Store` suffix (e.g., `authStore.ts`)
-
-#### State Management
-- **Server state**: React Query (planned)
-- **Client state**: Zustand stores
-- **Form state**: React Hook Form (planned)
-
----
-
-### Python (FastAPI)
-
-#### Imports
-```python
-# Order: stdlib → third-party → local
-import os
-from typing import Optional
-from fastapi import FastAPI
-from pydantic import BaseModel
-from config.settings import settings
-```
-
-#### Formatting (Black + Pylint)
-- **Line length**: 88 characters (Black default)
-- **4 spaces** indentation
-- **Double quotes** for strings: `"hello"` not `'hello'`
-- Files must end with a newline
-
-#### Type Hints
-```python
-# Always use type hints for function signatures
-def create_booking(user_id: int, trip_id: str) -> Booking:
-    pass
-
-# Use Optional for nullable values
-def get_user(user_id: int) -> Optional[User]:
-    pass
-
-# Use type aliases for complex types
-UserId = int
-BookingStatus = Literal["pending", "confirmed", "cancelled"]
-```
-
-#### Naming Conventions
-```python
-# snake_case for functions, variables, modules
-def calculate_total_price():
-    trip_duration = 5
-
-# PascalCase for classes
-class TripBookingService:
-    pass
-
-# SCREAMING_SNAKE_CASE for constants
-MAX_BOOKING_DAYS = 30
-API_VERSION = "1.0.0"
-
-# Private attributes with single underscore
-class Session:
-    def __init__(self):
-        self._redis_key = "session:123"
-```
-
-#### Docstrings
-```python
-"""
-Module docstring using triple double-quotes.
-
-Follows Google style docstrings.
-"""
-
-def complex_function(param1: str, param2: int) -> dict:
-    """
-    Brief one-line description.
-    
-    More detailed description if needed. Explain behavior,
-    not implementation.
-    
-    Args:
-        param1: Description of param1
-        param2: Description of param2
-        
-    Returns:
-        Dictionary containing result data
-        
-    Raises:
-        ValueError: When param2 is negative
-    """
-    pass
-```
-
-#### Error Handling
-```python
-# Use FastAPI HTTPException for API errors
-from fastapi import HTTPException
-
-raise HTTPException(status_code=404, detail="Trip not found")
-raise HTTPException(status_code=400, detail="Invalid booking date")
-
-# Use custom exceptions for business logic
-class InsufficientFundsError(Exception):
-    pass
-
-# Validate early with Pydantic
-class BookingRequest(BaseModel):
-    trip_id: str
-    user_id: int
-    start_date: str  # Will be validated by Pydantic
-```
-
-#### Async Code
-```python
-# Prefer async/await for I/O operations
-async def fetch_user(user_id: int) -> User:
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"/users/{user_id}")
-        return User(**response.json())
-
-# Use await for Redis, database, HTTP calls
-await redis.set(key, value)
-await db.execute(query)
-```
-
----
-
-## Testing Patterns
-
-### Backend (Jest)
-```typescript
-// Unit test example
-describe('TripService', () => {
-  it('should create a trip', async () => {
-    const trip = await service.create(tripDto);
-    expect(trip.id).toBeDefined();
-  });
-});
-
-// E2E test example
-describe('AppController (e2e)', () => {
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200);
-  });
-});
-```
-
-### Python (Pytest)
-```python
-# Unit test example
-def test_validate_booking_date():
-    assert is_valid_date("2026-04-15") is True
-    assert is_valid_date("2020-01-01") is False
-
-# Async test example
-@pytest.mark.asyncio
-async def test_fetch_user():
-    user = await fetch_user(123)
-    assert user.id == 123
-```
-
----
-
-## Key Architectural Patterns
-
-1. **Service Layer**: Business logic lives in services, not controllers/routes
-2. **DTO Pattern**: Use Data Transfer Objects for API inputs/outputs
-3. **Dependency Injection**: NestJS uses DI; Python uses FastAPI's Depends()
-4. **Environment Validation**: All services validate config on startup (fail fast)
-5. **Error Boundaries**: Frontend uses React error boundaries; backend uses exception filters
-6. **Separation of Concerns**: AI agent never directly modifies data; always goes through backend
-
----
-
-## Important Notes
-
-- **No test framework** is configured for the frontend yet
-- Backend uses **Jest 30** (latest), not older versions
-- Python code uses **Pydantic v2** syntax (not v1)
-- All services support **hot-reload** during development
-- Use **structured logging** (structlog) in Python, not print statements
-- Frontend uses **Next.js App Router** (not Pages Router)
-- Backend uses **NestJS module system** for organization
+| Topic | File |
+|---|---|
+| System architecture | `docs/architectures/system.design.interact.architectures.md` |
+| Backend architecture | `docs/architectures/backend.architecture.md` |
+| Frontend architecture | `docs/architectures/frontend.architecture.md` |
+| AI agent architecture | `docs/architectures/Agentic.llm.chatbot.md` |
+| DB schema | `docs/backend/01-database-schema.md` |
+| Auth system | `docs/backend/02-authentication.md` |
+| Payment system | `docs/backend/06-payment-system.md` |
+| AI state machine | `docs/agentic_chatbots_llm/A-01-conversation-state.md` |
+| AI system prompts | `docs/agentic_chatbots_llm/A-02-system-prompt-design.md` |
+| AI tools API | `docs/agentic_chatbots_llm/14-ai-tools-api.md` |
+| QA test scenarios | `docs/agentic_chatbots_llm/QA_bugs_hunter/` |
+| Feature specs | `docs/features/F01-ai-chat.md` through `F14-F16-batch.md` |
