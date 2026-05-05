@@ -7,7 +7,6 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY prisma ./prisma/
-COPY prisma.config.ts ./
 RUN npx prisma generate
 
 COPY . .
@@ -26,7 +25,6 @@ RUN npm ci --omit=dev
 # Copy Prisma client and schema
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./
 
 # Copy built application
 COPY --from=builder /app/dist ./dist

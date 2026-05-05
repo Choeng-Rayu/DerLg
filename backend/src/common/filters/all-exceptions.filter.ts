@@ -5,7 +5,6 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { SentryExceptionCaptured } from '@sentry/nestjs';
 import { Request, Response } from 'express';
 import type { ArgumentsHost } from '@nestjs/common';
 
@@ -13,7 +12,6 @@ import type { ArgumentsHost } from '@nestjs/common';
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
-  @SentryExceptionCaptured()
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -34,7 +32,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const errorCode =
       typeof errorResponse === 'object' && errorResponse !== null
-        ? (errorResponse as any).errorCode || (errorResponse as any).error || 'INTERNAL_SERVER_ERROR'
+        ? (errorResponse as any).errorCode ||
+          (errorResponse as any).error ||
+          'INTERNAL_SERVER_ERROR'
         : 'INTERNAL_SERVER_ERROR';
 
     const details =
