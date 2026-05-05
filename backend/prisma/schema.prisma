@@ -154,9 +154,10 @@ enum ReviewSubjectType {
 // 1. users — local auth (no Supabase)
 model User {
   id                    String    @id @default(uuid())
+  telegramId            String?   @unique @map("telegram_id") @db.VarChar(50)
   name                  String    @db.VarChar(100)
-  email                 String    @unique
-  passwordHash          String    @map("password_hash")
+  email                 String?   @unique
+  passwordHash          String?   @map("password_hash")
   phone                 String?   @db.VarChar(20)
   avatarUrl             String?   @map("avatar_url")
   role                  UserRole  @default(USER)

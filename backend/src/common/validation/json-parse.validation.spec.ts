@@ -5,7 +5,9 @@ import {
   parseTripItinerary,
 } from './json-parse.validation.js';
 
-const nonEmptyStringArb = fc.string({ minLength: 1, maxLength: 40 }).filter((s) => s.trim().length > 0);
+const nonEmptyStringArb = fc
+  .string({ minLength: 1, maxLength: 40 })
+  .filter((s) => s.trim().length > 0);
 
 const validBookingCustomizationsArb = fc.record({
   pickup: fc.record({
@@ -43,7 +45,9 @@ const validCancellationPolicyArb = fc.record({
     }),
     { minLength: 1, maxLength: 6 },
   ),
-  noShowPenaltyPercent: fc.option(fc.integer({ min: 0, max: 100 }), { nil: undefined }),
+  noShowPenaltyPercent: fc.option(fc.integer({ min: 0, max: 100 }), {
+    nil: undefined,
+  }),
 });
 
 describe('Property 54: JSON validation on parse', () => {
@@ -88,7 +92,9 @@ describe('Property 54: JSON validation on parse', () => {
           },
         };
 
-        expect(() => parseBookingCustomizations(invalid)).toThrow(/bookingCustomizations\.pickup\.time/);
+        expect(() => parseBookingCustomizations(invalid)).toThrow(
+          /bookingCustomizations\.pickup\.time/,
+        );
       }),
       { numRuns: 120 },
     );
@@ -108,7 +114,9 @@ describe('Property 54: JSON validation on parse', () => {
           ],
         };
 
-        expect(() => parseTripItinerary(invalid)).toThrow(/tripItinerary\.days\.0\.activities/);
+        expect(() => parseTripItinerary(invalid)).toThrow(
+          /tripItinerary\.days\.0\.activities/,
+        );
       }),
       { numRuns: 120 },
     );
@@ -128,7 +136,9 @@ describe('Property 54: JSON validation on parse', () => {
           ],
         };
 
-        expect(() => parseCancellationPolicy(invalid)).toThrow(/cancellationPolicy\.rules\.0\.refundPercent/);
+        expect(() => parseCancellationPolicy(invalid)).toThrow(
+          /cancellationPolicy\.rules\.0\.refundPercent/,
+        );
       }),
       { numRuns: 120 },
     );
@@ -138,9 +148,13 @@ describe('Property 54: JSON validation on parse', () => {
     fc.assert(
       fc.property(nonEmptyStringArb, (raw) => {
         fc.pre(!raw.trim().startsWith('{') && !raw.trim().startsWith('['));
-        expect(() => parseBookingCustomizations(raw)).toThrow(/bookingCustomizations/);
+        expect(() => parseBookingCustomizations(raw)).toThrow(
+          /bookingCustomizations/,
+        );
         expect(() => parseTripItinerary(raw)).toThrow(/tripItinerary/);
-        expect(() => parseCancellationPolicy(raw)).toThrow(/cancellationPolicy/);
+        expect(() => parseCancellationPolicy(raw)).toThrow(
+          /cancellationPolicy/,
+        );
       }),
       { numRuns: 80 },
     );

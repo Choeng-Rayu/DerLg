@@ -76,7 +76,10 @@ function parseAndValidateJson<T>(
   const parsed = schema.safeParse(payload);
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
-    const path = issue.path.length > 0 ? `${fieldName}.${issue.path.join('.')}` : fieldName;
+    const path =
+      issue.path.length > 0
+        ? `${fieldName}.${issue.path.join('.')}`
+        : fieldName;
     throw new Error(`Invalid ${fieldName} at ${path}: ${issue.message}`);
   }
 
@@ -84,7 +87,11 @@ function parseAndValidateJson<T>(
 }
 
 export function parseBookingCustomizations(value: JsonInput) {
-  return parseAndValidateJson('bookingCustomizations', value, bookingCustomizationsSchema);
+  return parseAndValidateJson(
+    'bookingCustomizations',
+    value,
+    bookingCustomizationsSchema,
+  );
 }
 
 export function parseTripItinerary(value: JsonInput) {
@@ -92,5 +99,9 @@ export function parseTripItinerary(value: JsonInput) {
 }
 
 export function parseCancellationPolicy(value: JsonInput) {
-  return parseAndValidateJson('cancellationPolicy', value, cancellationPolicySchema);
+  return parseAndValidateJson(
+    'cancellationPolicy',
+    value,
+    cancellationPolicySchema,
+  );
 }

@@ -12,10 +12,10 @@ export class RegisterDto {
   @IsString()
   @MinLength(2)
   @MaxLength(100)
-  name: string;
+  name!: string;
 
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @MinLength(8)
@@ -25,7 +25,7 @@ export class RegisterDto {
   @Matches(/(?=.*[0-9])/, {
     message: 'Password must contain at least one number',
   })
-  password: string;
+  password!: string;
 
   @IsOptional()
   @IsString()

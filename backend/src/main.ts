@@ -1,7 +1,7 @@
-import "./config/instrument.js"; 
+import './config/instrument.js';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common'
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import { ValidationPipe, Logger } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
@@ -75,7 +75,7 @@ async function bootstrap() {
     process.exit(0);
   });
 
-  const port = process.env.PORT ?? 3001
+  const port = process.env.PORT ?? 3001;
 
   // Swagger API Documentation (dev only)
   if (process.env.NODE_ENV !== 'production') {
@@ -83,8 +83,8 @@ async function bootstrap() {
       .setTitle('DerLg.com API')
       .setDescription(
         'REST API for DerLg.com — Cambodia Travel Booking Platform.\n\n' +
-        '**Authentication:** Bearer JWT token via `Authorization` header.\n' +
-        '**AI Agent:** `X-Service-Key` header for `/v1/ai-tools/` endpoints.',
+          '**Authentication:** Bearer JWT token via `Authorization` header.\n' +
+          '**AI Agent:** `X-Service-Key` header for `/v1/ai-tools/` endpoints.',
       )
       .setVersion('1.0')
       .addBearerAuth({
@@ -99,9 +99,9 @@ async function bootstrap() {
       )
       .addServer(`http://localhost:${port}`, 'Local Development')
       .addServer('https://api.derlg.com', 'Production')
-      .build()
+      .build();
 
-    const document = SwaggerModule.createDocument(app, swaggerConfig)
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('api-docs', app, document, {
       swaggerOptions: {
         persistAuthorization: true,
@@ -109,13 +109,13 @@ async function bootstrap() {
         filter: true,
         tagsSorter: 'alpha',
       },
-    })
-    logger.log(`📚 Swagger docs: http://localhost:${port}/api-docs`)
+    });
+    logger.log(`📚 Swagger docs: http://localhost:${port}/api-docs`);
   }
 
-  await app.listen(port)
-  logger.log(`🚀 DerLg Backend running on http://localhost:${port}`)
-  logger.log(`📋 Health check: http://localhost:${port}/health`)
+  await app.listen(port);
+  logger.log(`🚀 DerLg Backend running on http://localhost:${port}`);
+  logger.log(`📋 Health check: http://localhost:${port}/health`);
 }
 
 bootstrap();

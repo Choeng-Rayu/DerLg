@@ -68,7 +68,7 @@ export class UsersService {
       });
     }
 
-    // TODO: Upload to Supabase Storage when configured
+    // TODO: Upload avatar to object storage when configured
     // For now, store a placeholder URL
     const avatarUrl = `/avatars/${userId}/${file.originalname}`;
 

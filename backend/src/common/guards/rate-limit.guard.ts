@@ -7,7 +7,10 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RateLimiterService } from '../../redis/rate-limiter.service.js';
-import { RATE_LIMIT_KEY, RateLimitOptions } from '../decorators/rate-limit.decorator.js';
+import {
+  RATE_LIMIT_KEY,
+  RateLimitOptions,
+} from '../decorators/rate-limit.decorator.js';
 
 @Injectable()
 export class RateLimitGuard implements CanActivate {
@@ -17,17 +20,17 @@ export class RateLimitGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const options = this.reflector.getAllAndOverride<RateLimitOptions>(RATE_LIMIT_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const options = this.reflector.getAllAndOverride<RateLimitOptions>(
+      RATE_LIMIT_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
     if (!options) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
-    
+
     // Use user ID if authenticated, otherwise fallback to IP
     const identifier = request.user?.id || request.ip;
 
