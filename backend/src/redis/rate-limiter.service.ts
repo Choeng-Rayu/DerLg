@@ -22,15 +22,15 @@ export class RateLimiterService {
     windowInSeconds: number,
   ): Promise<boolean> {
     const key = `rate_limit:${endpointName}:${identifier}`;
-    
+
     try {
       const current = await this.redisService.incr(key);
-      
+
       if (current === 1) {
         // First request in the window, set expiration
         await this.redisService.expire(key, windowInSeconds);
       }
-      
+
       return current <= limit;
     } catch (error) {
       this.logger.error(`Rate limiter error for ${key}:`, error);

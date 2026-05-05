@@ -1,19 +1,12 @@
-import {
-  ExceptionFilter,
-  Catch,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, HttpStatus, Logger } from '@nestjs/common';
 import type { ArgumentsHost } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { SentryExceptionCaptured } from '@sentry/nestjs';
 import { Response, Request } from 'express';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(PrismaClientExceptionFilter.name);
 
-  @SentryExceptionCaptured()
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -57,7 +50,10 @@ export class PrismaClientExceptionFilter implements ExceptionFilter {
         break;
     }
 
-    this.logger.error(`Prisma Error [${exception.code}]: ${message}`, exception.stack);
+    this.logger.error(
+      `Prisma Error [${exception.code}]: ${message}`,
+      exception.stack,
+    );
 
     response.status(status).json({
       success: false,

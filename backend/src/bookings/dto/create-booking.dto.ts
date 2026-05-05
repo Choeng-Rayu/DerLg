@@ -13,7 +13,7 @@ import {
 
 export class CreateBookingDto {
   @IsEnum(['PACKAGE', 'HOTEL_ONLY', 'TRANSPORT_ONLY', 'GUIDE_ONLY'])
-  bookingType: string;
+  bookingType!: string;
 
   @IsUUID()
   @IsOptional()
@@ -32,7 +32,7 @@ export class CreateBookingDto {
   guideId?: string;
 
   @IsDateString()
-  travelDate: string;
+  travelDate!: string;
 
   @IsDateString()
   @IsOptional()
@@ -41,7 +41,7 @@ export class CreateBookingDto {
   @IsInt()
   @Min(1)
   @Max(20)
-  numAdults: number;
+  numAdults!: number;
 
   @IsInt()
   @Min(0)
