@@ -1,14 +1,22 @@
 import { Controller, Get } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 
 @Controller('health')
+@ApiTags('Health')
 export class HealthController {
   constructor(
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
   ) {}
 
+  @ApiOperation({ summary: 'Check system health (DB, Redis)' })
+  @ApiOkResponse({ description: 'Health status with services info' })
   @Get()
   async check() {
     const startTime = Date.now();
