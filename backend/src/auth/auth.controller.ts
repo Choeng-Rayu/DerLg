@@ -162,12 +162,12 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Google OAuth 2.0 callback' })
-  @ApiOkResponse({ description: 'OAuth login successful, returns tokens' })
+  @ApiOkResponse({ description: 'OAuth login successful, redirects to frontend' })
   @Get('google/callback')
   @UseGuards(GoogleOAuthGuard)
   async googleAuthCallback(
     @Req() req: any,
-    @Res({ passthrough: true }) res: any,
+    @Res() res: Response,
   ) {
     const result = await this.authService.googleAuth(req.user);
 
@@ -179,10 +179,8 @@ export class AuthController {
       path: '/v1/auth/refresh',
     });
 
-    return {
-      accessToken: result.accessToken,
-      user: result.user,
-    };
+    const frontendUrl = process.env.CORS_ORIGINS?.split(',')[0] || 'http://localhost:5000';
+    return res.redirect(`${frontendUrl}/callback?accessToken=${result.accessToken}`);
   }
 
   @ApiOperation({ summary: 'Authenticate using Telegram Mini App data' })

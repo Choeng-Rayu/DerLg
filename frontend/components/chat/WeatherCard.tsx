@@ -1,3 +1,3 @@
-export default function WeatherCard() {
+export function WeatherCard() {
   return <div>Weather Card</div>;
 }

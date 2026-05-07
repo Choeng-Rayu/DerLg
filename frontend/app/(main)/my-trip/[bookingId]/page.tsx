@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 import { BookingDetail } from '@/components/booking/BookingDetail'
 import { PageContainer } from '@/components/layout/PageContainer'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { api } from '@/lib/api'
 
 export default function MyTripDetailPage() {

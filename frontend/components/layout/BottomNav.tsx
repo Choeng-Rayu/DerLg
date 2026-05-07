@@ -18,7 +18,7 @@ export function BottomNav() {
   const openChat = useAppStore((state) => state.openChat)
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-surface-raised)_92%,transparent)] backdrop-blur lg:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-[color-mix(in_srgb,var(--color-surface-raised)_92%,transparent)] backdrop-blur lg:hidden">
       <div className="grid grid-cols-6">
         {items.map((item) => {
           const Icon = item.icon
@@ -28,7 +28,7 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={`flex min-h-16 flex-col items-center justify-center gap-1 text-xs ${
-                active ? 'text-[var(--color-primary-600)]' : 'text-[var(--color-foreground-muted)]'
+                active ? 'text-primary-600' : 'text-foreground-muted'
               }`}
             >
               <Icon className="size-4" />
@@ -39,7 +39,7 @@ export function BottomNav() {
         <button
           type="button"
           onClick={openChat}
-          className="flex min-h-16 flex-col items-center justify-center gap-1 text-xs text-[var(--color-accent)]"
+          className="flex min-h-16 flex-col items-center justify-center gap-1 text-xs text-accent"
         >
           <Bot className="size-4" />
           <span>AI</span>

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Bot, Search } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { PageContainer } from '@/components/layout/PageContainer'
 
 export function HeroSection() {
@@ -8,13 +8,13 @@ export function HeroSection() {
     <section className="py-10 sm:py-14">
       <PageContainer className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-[var(--color-primary-600)]">
+          <p className="text-sm font-semibold uppercase tracking-wide text-primary-600">
             Cambodia travel planning
           </p>
           <h1 className="mt-4 max-w-3xl text-[length:var(--fluid-h1)] font-semibold leading-[1.05]">
             Build a calmer trip from booking to arrival
           </h1>
-          <p className="mt-4 max-w-2xl text-base text-[var(--color-foreground-muted)] sm:text-lg">
+          <p className="mt-4 max-w-2xl text-base text-foreground-muted sm:text-lg">
             Trips, hotels, transport, festivals, and a bilingual support layer in one place.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -32,7 +32,7 @@ export function HeroSection() {
             </Button>
           </div>
         </div>
-        <div className="rounded-[2rem] border border-[var(--color-border)] bg-[linear-gradient(180deg,#0e7490,#102a43)] p-6 text-white shadow-[var(--shadow-lg)]">
+        <div className="rounded-[2rem] border border-border bg-[linear-gradient(180deg,#0e7490,#102a43)] p-6 text-white shadow-lg">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl bg-white/10 p-4">
               <p className="text-sm text-white/80">Featured trips</p>

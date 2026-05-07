@@ -5,10 +5,10 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { api } from '@/lib/api'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { Input } from '@/components/ui/Input'
 
 const verificationSchema = z.object({
   institutionName: z.string().min(2),
@@ -39,7 +39,7 @@ export function StudentVerification() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Student discount</h2>
-          <p className="mt-1 text-sm text-[var(--color-foreground-muted)]">
+          <p className="mt-1 text-sm text-foreground-muted">
             Verification is API-backed. File storage endpoints are not live yet, so URL inputs are used for now.
           </p>
         </div>

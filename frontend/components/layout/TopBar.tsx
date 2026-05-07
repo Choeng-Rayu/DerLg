@@ -3,9 +3,9 @@
 import Link from 'next/link'
 import { Bot, Compass, Heart, UserRound } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
-import { Button } from '@/components/ui/button'
-import { Avatar } from '@/components/ui/avatar'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { Button } from '@/components/ui/Button'
+import { Avatar } from '@/components/ui/Avatar'
 import { useAppStore } from '@/stores/app-store'
 import { useAuthStore } from '@/stores/authStore'
 import { SearchBox } from '@/components/search/SearchBox'
@@ -25,10 +25,10 @@ export function TopBar() {
   const user = useAuthStore((state) => state.user)
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-surface-raised)_88%,transparent)] backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border bg-[color-mix(in_srgb,var(--color-surface-raised)_88%,transparent)] backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="inline-flex items-center gap-2 font-semibold">
-          <span className="inline-flex size-10 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-white">
+          <span className="inline-flex size-10 items-center justify-center rounded-full bg-primary-500 text-white">
             <Compass className="size-5" />
           </span>
           <span className="hidden sm:inline">DerLg</span>
@@ -42,8 +42,8 @@ export function TopBar() {
                 href={item.href}
                 className={`rounded-full px-4 py-2 text-sm transition ${
                   active
-                    ? 'bg-[var(--color-surface-muted)] text-[var(--color-foreground)]'
-                    : 'text-[var(--color-foreground-muted)] hover:bg-[var(--color-surface-muted)]'
+                    ? 'bg-surface-muted text-foreground'
+                    : 'text-foreground-muted hover:bg-surface-muted'
                 }`}
               >
                 {item.label}
@@ -58,7 +58,7 @@ export function TopBar() {
           <Button type="button" variant="ghost" size="icon" aria-label="Favorites">
             <Heart className="size-4" />
             {favorites.length ? (
-              <span className="absolute -right-1 -top-1 inline-flex size-5 items-center justify-center rounded-full bg-[var(--color-accent)] text-[10px] text-slate-900">
+              <span className="absolute -right-1 -top-1 inline-flex size-5 items-center justify-center rounded-full bg-accent text-[10px] text-slate-900">
                 {favorites.length}
               </span>
             ) : null}
@@ -71,7 +71,7 @@ export function TopBar() {
             {user ? (
               <Avatar alt={user.name} src={user.avatarUrl} className="size-10" />
             ) : (
-              <span className="inline-flex size-10 items-center justify-center rounded-full border border-[var(--color-border)]">
+              <span className="inline-flex size-10 items-center justify-center rounded-full border border-border">
                 <UserRound className="size-4" />
               </span>
             )}

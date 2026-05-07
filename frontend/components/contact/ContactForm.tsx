@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { toast } from '@/components/ui/toast'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { Input } from '@/components/ui/Input'
+import { toast } from '@/components/ui/Toast'
 
 export function ContactForm() {
   const [submitting, setSubmitting] = useState(false)
@@ -31,7 +31,7 @@ export function ContactForm() {
         <Input label="Subject" required />
         <label className="grid gap-2 text-sm">
           <span className="font-medium">Message</span>
-          <textarea className="min-h-32 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 outline-none" required />
+          <textarea className="min-h-32 rounded-2xl border border-border bg-surface-raised px-4 py-3 outline-none" required />
         </label>
         <Button type="submit" loading={submitting}>
           Send message

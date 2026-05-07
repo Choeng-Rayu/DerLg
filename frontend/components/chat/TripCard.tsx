@@ -1,3 +1,3 @@
-export default function TripCard() {
+export function TripCard() {
   return <div>Trip Card</div>;
 }

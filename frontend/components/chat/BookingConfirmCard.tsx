@@ -1,3 +1,3 @@
-export default function BookingConfirmCard() {
+export function BookingConfirmCard() {
   return <div>Booking Confirm Card</div>;
 }

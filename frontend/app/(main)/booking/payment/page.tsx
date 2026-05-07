@@ -13,7 +13,7 @@ export default function PaymentPage() {
   return (
     <PageContainer className="py-8">
       <h1 className="text-[length:var(--fluid-h2)] font-semibold">Payment</h1>
-      <p className="mt-2 text-sm text-[var(--color-foreground-muted)]">
+      <p className="mt-2 text-sm text-foreground-muted">
         Stripe intent creation is live. Card confirmation can be completed as soon as the public key is configured.
       </p>
       <div className="mt-6">

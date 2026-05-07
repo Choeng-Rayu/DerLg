@@ -1,13 +1,13 @@
 import { ContactForm } from '@/components/contact/ContactForm'
 import { PageContainer } from '@/components/layout/PageContainer'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui/Card'
 
 export default function ContactPage() {
   return (
     <PageContainer className="py-8">
       <div className="mb-6">
         <h1 className="text-[length:var(--fluid-h2)] font-semibold">Contact & support</h1>
-        <p className="mt-2 text-sm text-[var(--color-foreground-muted)]">
+        <p className="mt-2 text-sm text-foreground-muted">
           Reach travel support, booking assistance, and emergency follow-up.
         </p>
       </div>
@@ -15,7 +15,7 @@ export default function ContactPage() {
         <ContactForm />
         <Card>
           <h2 className="text-lg font-semibold">Support details</h2>
-          <div className="mt-4 grid gap-3 text-sm text-[var(--color-foreground-muted)]">
+          <div className="mt-4 grid gap-3 text-sm text-foreground-muted">
             <p>Email: support@derlg.com</p>
             <p>Phone: +855 23 000 000</p>
             <p>Business hours: 08:00-20:00 ICT</p>

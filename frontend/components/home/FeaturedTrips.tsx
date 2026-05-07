@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { Star } from 'lucide-react'
 import { api } from '@/lib/api'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui/Card'
 import { PageContainer } from '@/components/layout/PageContainer'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { formatCurrency } from '@/lib/date-utils'
 
 export function FeaturedTrips() {
@@ -21,11 +21,11 @@ export function FeaturedTrips() {
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
             <h2 className="text-[length:var(--fluid-h3)] font-semibold">Featured trips</h2>
-            <p className="text-sm text-[var(--color-foreground-muted)]">
+            <p className="text-sm text-foreground-muted">
               Reliable starting points for first-time visitors and repeat travelers.
             </p>
           </div>
-          <Link href="/explore" className="text-sm font-medium text-[var(--color-primary-600)]">
+          <Link href="/explore" className="text-sm font-medium text-primary-600">
             View all
           </Link>
         </div>
@@ -42,7 +42,7 @@ export function FeaturedTrips() {
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <h3 className="text-lg font-semibold">{trip.title}</h3>
-                          <p className="mt-1 text-sm text-[var(--color-foreground-muted)]">
+                          <p className="mt-1 text-sm text-foreground-muted">
                             {trip.destination || trip.province || 'Cambodia'}
                           </p>
                         </div>
@@ -54,7 +54,7 @@ export function FeaturedTrips() {
                         ) : null}
                       </div>
                       <div className="mt-4 flex items-end justify-between">
-                        <p className="text-sm text-[var(--color-foreground-muted)]">
+                        <p className="text-sm text-foreground-muted">
                           {trip.durationDays} days
                         </p>
                         <p className="text-base font-semibold">

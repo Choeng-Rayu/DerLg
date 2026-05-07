@@ -1,3 +1,3 @@
-export default function OfflineMapView() {
+export function OfflineMapView() {
   return <div>Offline Map View</div>;
 }
