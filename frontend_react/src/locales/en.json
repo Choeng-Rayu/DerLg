@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "home": "Home",
+    "explore": "Explore",
+    "booking": "Booking",
+    "myTrips": "My Trips",
+    "profile": "Profile",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "home": {
+    "heroTitle": "Discover Cambodia",
+    "heroSubtitle": "Unforgettable journeys across ancient temples, vibrant cities, and pristine nature",
+    "searchPlaceholder": "Where do you want to go?",
+    "bookNow": "Book Now",
+    "featuredTrips": "Featured Trips",
+    "upcomingFestivals": "Upcoming Festivals",
+    "categories": "Categories",
+    "viewAll": "View All"
+  },
+  "explore": {
+    "places": "Places",
+    "festivals": "Festivals",
+    "map": "Map",
+    "filterBy": "Filter By",
+    "search": "Search",
+    "noResults": "No results found"
+  },
+  "auth": {
+    "loginTitle": "Welcome Back",
+    "registerTitle": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "submit": "Submit",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?"
+  },
+  "booking": {
+    "date": "Date",
+    "guests": "Guests",
+    "specialRequests": "Special Requests",
+    "bookNow": "Book Now",
+    "totalPrice": "Total Price"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "profile": {
+    "myProfile": "My Profile",
+    "loyaltyPoints": "Loyalty Points",
+    "studentDiscount": "Student Discount",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "notifications": "Notifications",
+    "deleteAccount": "Delete Account"
+  }
+}
