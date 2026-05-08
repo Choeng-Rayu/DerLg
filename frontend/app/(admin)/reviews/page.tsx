@@ -1,5 +1,5 @@
 import { RequireAuth } from '@/components/auth/RequireAuth'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui/Card'
 
 export default function AdminReviewsPage() {
   return (

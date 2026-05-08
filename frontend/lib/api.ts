@@ -1,4 +1,5 @@
 import { apiClient } from '@/lib/api-client'
+import { API_ENDPOINTS } from '@/lib/apiEndpoints'
 import type {
   Booking,
   CurrencyRates,
@@ -22,116 +23,121 @@ import type {
 export const api = {
   auth: {
     login: (payload: LoginCredentials) =>
-      apiClient.post<{ accessToken: string; user: User }>('/auth/login', payload),
+      apiClient.post<{ accessToken: string; user: User }>(API_ENDPOINTS.auth.login, payload),
     register: (payload: RegisterData) =>
-      apiClient.post<{ userId: string; message: string }>('/auth/register', payload),
-    logout: () => apiClient.post<{ message: string }>('/auth/logout'),
-    refresh: () => apiClient.post<{ accessToken: string | null }>('/auth/refresh'),
+      apiClient.post<{ userId: string; message: string }>(API_ENDPOINTS.auth.register, payload),
+    logout: () => apiClient.post<{ message: string }>(API_ENDPOINTS.auth.logout),
+    refresh: () => apiClient.post<{ accessToken: string | null }>(API_ENDPOINTS.auth.refresh),
     forgotPassword: (email: string) =>
-      apiClient.post<{ message: string }>('/auth/forgot-password', { email }),
+      apiClient.post<{ message: string }>(API_ENDPOINTS.auth.forgotPassword, { email }),
+    google: () => {
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/v1${API_ENDPOINTS.auth.google}`
+    },
+    telegram: (payload: Record<string, unknown>) =>
+      apiClient.post<{ accessToken: string; user: User }>(API_ENDPOINTS.auth.telegram, payload),
   },
   users: {
-    profile: () => apiClient.get<User>('/users/profile'),
+    profile: () => apiClient.get<User>(API_ENDPOINTS.users.profile),
     updateProfile: (payload: Partial<User>) =>
-      apiClient.patch<User>('/users/profile', payload),
+      apiClient.patch<User>(API_ENDPOINTS.users.profile, payload),
   },
   trips: {
     list: (params?: Record<string, unknown>) =>
-      apiClient.get<PaginatedResponse<Trip>>('/trips', { params }),
-    featured: () => apiClient.get<Trip[]>('/trips/featured'),
-    detail: (id: string) => apiClient.get<Trip>(`/trips/${id}`),
+      apiClient.get<PaginatedResponse<Trip>>(API_ENDPOINTS.trips.list, { params }),
+    featured: () => apiClient.get<Trip[]>(API_ENDPOINTS.trips.featured),
+    detail: (id: string) => apiClient.get<Trip>(API_ENDPOINTS.trips.detail(id)),
   },
   explore: {
     places: (params?: Record<string, unknown>) =>
-      apiClient.get<PaginatedResponse<Place>>('/explore/places', { params }),
-    place: (id: string) => apiClient.get<Place>(`/explore/places/${id}`),
+      apiClient.get<PaginatedResponse<Place>>(API_ENDPOINTS.explore.places, { params }),
+    place: (id: string) => apiClient.get<Place>(API_ENDPOINTS.explore.place(id)),
     provinces: () =>
       apiClient.get<Array<{ province: string; placeCount: number }>>(
-        '/explore/provinces',
+        API_ENDPOINTS.explore.provinces,
       ),
   },
   festivals: {
     list: (params?: Record<string, unknown>) =>
-      apiClient.get<Festival[]>('/festivals', { params }),
-    detail: (id: string) => apiClient.get<Festival>(`/festivals/${id}`),
+      apiClient.get<Festival[]>(API_ENDPOINTS.festivals.list, { params }),
+    detail: (id: string) => apiClient.get<Festival>(API_ENDPOINTS.festivals.detail(id)),
   },
   hotels: {
     list: (params?: Record<string, unknown>) =>
-      apiClient.get<PaginatedResponse<Hotel>>('/hotels', { params }),
-    detail: (id: string) => apiClient.get<Hotel>(`/hotels/${id}`),
+      apiClient.get<PaginatedResponse<Hotel>>(API_ENDPOINTS.hotels.list, { params }),
+    detail: (id: string) => apiClient.get<Hotel>(API_ENDPOINTS.hotels.detail(id)),
     roomAvailability: (hotelId: string, roomId: string, params: Record<string, unknown>) =>
       apiClient.get<{ available: boolean; remainingRooms: number }>(
-        `/hotels/${hotelId}/rooms/${roomId}/availability`,
+        API_ENDPOINTS.hotels.roomAvailability(hotelId, roomId),
         { params },
       ),
   },
   transportation: {
     list: (params?: Record<string, unknown>) =>
-      apiClient.get<PaginatedResponse<Vehicle>>('/transportation/vehicles', {
+      apiClient.get<PaginatedResponse<Vehicle>>(API_ENDPOINTS.transportation.list, {
         params,
       }),
     detail: (id: string) =>
-      apiClient.get<Vehicle>(`/transportation/vehicles/${id}`),
+      apiClient.get<Vehicle>(API_ENDPOINTS.transportation.detail(id)),
   },
   guides: {
     list: (params?: Record<string, unknown>) =>
-      apiClient.get<PaginatedResponse<Guide>>('/guides', { params }),
-    detail: (id: string) => apiClient.get<Guide>(`/guides/${id}`),
+      apiClient.get<PaginatedResponse<Guide>>(API_ENDPOINTS.guides.list, { params }),
+    detail: (id: string) => apiClient.get<Guide>(API_ENDPOINTS.guides.detail(id)),
   },
   bookings: {
     create: (payload: Record<string, unknown>) =>
-      apiClient.post<Booking>('/bookings', payload),
+      apiClient.post<Booking>(API_ENDPOINTS.bookings.create, payload),
     list: (params?: Record<string, unknown>) =>
-      apiClient.get<PaginatedResponse<Booking>>('/bookings', { params }),
-    detail: (bookingRef: string) => apiClient.get<Booking>(`/bookings/${bookingRef}`),
+      apiClient.get<PaginatedResponse<Booking>>(API_ENDPOINTS.bookings.list, { params }),
+    detail: (bookingRef: string) => apiClient.get<Booking>(API_ENDPOINTS.bookings.detail(bookingRef)),
     cancel: (id: string, reason?: string) =>
-      apiClient.post<Booking>(`/bookings/${id}/cancel`, { reason }),
+      apiClient.post<Booking>(API_ENDPOINTS.bookings.cancel(id), { reason }),
     availability: (id: string, params: Record<string, unknown>) =>
       apiClient.get<{ available: boolean; conflictingDates: Array<{ start: string; end?: string | null }> }>(
-        `/bookings/${id}/availability`,
+        API_ENDPOINTS.bookings.availability(id),
         { params },
       ),
   },
   payments: {
     createIntent: (bookingId: string) =>
-      apiClient.post<PaymentIntentPayload>('/payments/create-intent', { bookingId }),
+      apiClient.post<PaymentIntentPayload>(API_ENDPOINTS.payments.createIntent, { bookingId }),
     status: (paymentIntentId: string) =>
-      apiClient.get<{ status: string }>(`/payments/${paymentIntentId}/status`),
+      apiClient.get<{ status: string }>(API_ENDPOINTS.payments.status(paymentIntentId)),
     refund: (bookingId: string, reason?: string) =>
-      apiClient.post<{ status: string }>('/payments/refund', { bookingId, reason }),
+      apiClient.post<{ status: string }>(API_ENDPOINTS.payments.refund, { bookingId, reason }),
   },
   loyalty: {
-    balance: () => apiClient.get<LoyaltyBalance>('/loyalty/balance'),
+    balance: () => apiClient.get<LoyaltyBalance>(API_ENDPOINTS.loyalty.balance),
     transactions: (params?: Record<string, unknown>) =>
-      apiClient.get<PaginatedResponse<LoyaltyTransaction>>('/loyalty/transactions', {
+      apiClient.get<PaginatedResponse<LoyaltyTransaction>>(API_ENDPOINTS.loyalty.transactions, {
         params,
       }),
     redeem: (bookingId: string, points: number) =>
       apiClient.post<{ redeemed: number; discountUsd: number; remainingPoints: number }>(
-        '/loyalty/redeem',
+        API_ENDPOINTS.loyalty.redeem,
         { bookingId, points },
       ),
   },
   student: {
-    status: () => apiClient.get<StudentVerification | null>('/student-discount/status'),
+    status: () => apiClient.get<StudentVerification | null>(API_ENDPOINTS.student.status),
     verify: (payload: Record<string, unknown>) =>
-      apiClient.post<StudentVerification>('/student-discount/verify', payload),
+      apiClient.post<StudentVerification>(API_ENDPOINTS.student.verify, payload),
   },
   emergency: {
-    contacts: () => apiClient.get<Array<{ label: string; phone: string }>>('/emergency/contacts'),
+    contacts: () => apiClient.get<Array<{ label: string; phone: string }>>(API_ENDPOINTS.emergency.contacts),
     createAlert: (payload: Record<string, unknown>) =>
-      apiClient.post<{ id: string; status: string }>('/emergency/alerts', payload),
+      apiClient.post<{ id: string; status: string }>(API_ENDPOINTS.emergency.createAlert, payload),
   },
   notifications: {
     list: (params?: Record<string, unknown>) =>
-      apiClient.get<PaginatedResponse<NotificationItem>>('/notifications', { params }),
-    read: (id: string) => apiClient.post<{ id: string }>(`/notifications/${id}/read`),
-    readAll: () => apiClient.post<{ updated: number }>('/notifications/read-all'),
+      apiClient.get<PaginatedResponse<NotificationItem>>(API_ENDPOINTS.notifications.list, { params }),
+    read: (id: string) => apiClient.post<{ id: string }>(API_ENDPOINTS.notifications.read(id)),
+    readAll: () => apiClient.post<{ updated: number }>(API_ENDPOINTS.notifications.readAll),
   },
   currency: {
-    rates: () => apiClient.get<CurrencyRates>('/currency/rates'),
+    rates: () => apiClient.get<CurrencyRates>(API_ENDPOINTS.currency.rates),
     convert: (amount: number) =>
-      apiClient.get<Record<string, number>>('/currency/convert', {
+      apiClient.get<Record<string, number>>(API_ENDPOINTS.currency.convert, {
         params: { amount },
       }),
   },

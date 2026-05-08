@@ -1,3 +1,3 @@
-export default function MessageBubble() {
+export function MessageBubble() {
   return <div>Message Bubble</div>;
 }

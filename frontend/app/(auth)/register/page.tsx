@@ -6,9 +6,11 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useAuth } from '@/hooks/useAuth'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { Input } from '@/components/ui/Input'
+import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton'
+import { TelegramLoginButton } from '@/components/auth/TelegramLoginButton'
 
 const registerSchema = z.object({
   name: z.string().min(2),
@@ -31,8 +33,23 @@ export default function RegisterPage() {
   return (
     <Card className="w-full max-w-md">
       <h1 className="text-2xl font-semibold">Create your DerLg account</h1>
+
+      <div className="mt-6 grid gap-3">
+        <GoogleLoginButton />
+        <TelegramLoginButton />
+      </div>
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-border" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-surface-base px-2 text-foreground-muted">Or register with email</span>
+        </div>
+      </div>
+
       <form
-        className="mt-6 grid gap-4"
+        className="grid gap-4"
         onSubmit={form.handleSubmit(async (values) => {
           await register.mutateAsync(values)
           router.push('/login')
@@ -46,9 +63,9 @@ export default function RegisterPage() {
           Register
         </Button>
       </form>
-      <p className="mt-4 text-sm text-[var(--color-foreground-muted)]">
+      <p className="mt-4 text-sm text-foreground-muted">
         Already registered?{' '}
-        <Link className="font-medium text-[var(--color-primary-600)]" href="/login">
+        <Link className="font-medium text-primary-600" href="/login">
           Sign in
         </Link>
       </p>

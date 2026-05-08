@@ -3,8 +3,8 @@
 import Link from 'next/link'
 import { Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/Input'
+import { Card } from '@/components/ui/Card'
 import { useSearch } from '@/hooks/useSearch'
 
 export function SearchBox() {
@@ -23,7 +23,7 @@ export function SearchBox() {
         placeholder="Search trips, places, festivals, hotels"
         value={value}
         onChange={(event) => setValue(event.target.value)}
-        icon={<Search className="size-4 text-[var(--color-foreground-subtle)]" />}
+        icon={<Search className="size-4 text-foreground-subtle" />}
       />
       {value.length > 1 ? (
         <Card className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-96 overflow-auto p-3">
@@ -32,7 +32,7 @@ export function SearchBox() {
               {groups.map((group) =>
                 group.items.length ? (
                   <div key={group.type} className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-foreground-subtle)]">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-foreground-subtle">
                       {group.label}
                     </p>
                     <div className="space-y-1">
@@ -54,7 +54,7 @@ export function SearchBox() {
                                   ? `/festivals?festival=${String(item.id)}`
                                   : `/hotels/${String(item.id)}`
                           }
-                          className="block rounded-2xl px-3 py-2 text-sm hover:bg-[var(--color-surface-muted)]"
+                          className="block rounded-2xl px-3 py-2 text-sm hover:bg-surface-muted"
                         >
                           {String(item.title || item.name)}
                         </Link>
@@ -65,7 +65,7 @@ export function SearchBox() {
               )}
             </div>
           ) : (
-            <p className="text-sm text-[var(--color-foreground-muted)]">
+            <p className="text-sm text-foreground-muted">
               No results yet. Try a province, travel style, hotel, or festival name.
             </p>
           )}

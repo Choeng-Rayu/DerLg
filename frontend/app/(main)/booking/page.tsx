@@ -14,7 +14,7 @@ export default function BookingPage() {
     <PageContainer className="py-8">
       <div className="mb-6">
         <h1 className="text-[length:var(--fluid-h2)] font-semibold">Booking flow</h1>
-        <p className="mt-2 text-sm text-[var(--color-foreground-muted)]">
+        <p className="mt-2 text-sm text-foreground-muted">
           Reserve the itinerary first, then move to payment while the backend hold is active.
         </p>
       </div>

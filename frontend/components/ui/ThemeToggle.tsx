@@ -1,0 +1,25 @@
+'use client'
+
+import { MoonStar, SunMedium } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { Button } from '@/components/ui/Button'
+
+export function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme()
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      aria-label="Toggle theme"
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+    >
+      {resolvedTheme === 'dark' ? (
+        <SunMedium className="size-4" />
+      ) : (
+        <MoonStar className="size-4" />
+      )}
+    </Button>
+  )
+}

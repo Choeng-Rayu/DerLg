@@ -1,3 +1,3 @@
-export default function BudgetEstimateCard() {
+export function BudgetEstimateCard() {
   return <div>Budget Estimate Card</div>;
 }

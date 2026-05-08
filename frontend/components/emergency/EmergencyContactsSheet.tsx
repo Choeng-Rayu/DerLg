@@ -1,3 +1,3 @@
-export default function EmergencyContactsSheet() {
+export function EmergencyContactsSheet() {
   return <div>Emergency Contacts Sheet</div>;
 }

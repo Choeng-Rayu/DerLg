@@ -1,3 +1,3 @@
-export default function CulturalInsight() {
+export function CulturalInsight() {
   return <div>Cultural Insight</div>;
 }

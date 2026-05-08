@@ -1,3 +1,3 @@
-export default function EmergencyButton() {
+export function EmergencyButton() {
   return <div>Emergency Button</div>;
 }

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { CalendarPlus2, Download, LifeBuoy } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 
 export function ConfirmationActions() {
   return (
