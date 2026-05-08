@@ -4,12 +4,12 @@ import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { PageContainer } from '@/components/layout/PageContainer'
-import { Tabs } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
+import { Tabs } from '@/components/ui/Tabs'
+import { Input } from '@/components/ui/Input'
 import { PlaceCard } from '@/components/explore/PlaceCard'
 import { FestivalCard } from '@/components/explore/FestivalCard'
 import { MapView } from '@/components/maps/MapView'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function ExplorePage() {
   const [tab, setTab] = useState('places')
@@ -44,7 +44,7 @@ export default function ExplorePage() {
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h1 className="text-[length:var(--fluid-h2)] font-semibold">Explore Cambodia</h1>
-          <p className="mt-2 text-sm text-[var(--color-foreground-muted)]">
+          <p className="mt-2 text-sm text-foreground-muted">
             Filter places, festivals, and map context without leaving the planning flow.
           </p>
         </div>

@@ -2,8 +2,8 @@
 
 import { localeLabels } from '@/lib/i18n'
 import { useAppStore } from '@/stores/app-store'
-import { Card } from '@/components/ui/card'
-import { Select } from '@/components/ui/select'
+import { Card } from '@/components/ui/Card'
+import { Select } from '@/components/ui/Select'
 
 export function Preferences() {
   const language = useAppStore((state) => state.language)

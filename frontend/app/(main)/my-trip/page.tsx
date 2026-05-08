@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 import { BookingCard } from '@/components/booking/BookingCard'
 import { PageContainer } from '@/components/layout/PageContainer'
-import { Tabs } from '@/components/ui/tabs'
+import { Tabs } from '@/components/ui/Tabs'
 import { api } from '@/lib/api'
 
 export default function MyTripPage() {
@@ -36,7 +36,7 @@ function MyTripContent({
     <PageContainer className="py-8">
       <div className="mb-6">
         <h1 className="text-[length:var(--fluid-h2)] font-semibold">My trips</h1>
-        <p className="mt-2 text-sm text-[var(--color-foreground-muted)]">
+        <p className="mt-2 text-sm text-foreground-muted">
           Upcoming, pending, and past reservations in one place.
         </p>
       </div>

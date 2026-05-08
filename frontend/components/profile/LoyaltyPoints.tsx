@@ -2,8 +2,8 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
-import { Card } from '@/components/ui/card'
-import { ProgressBar } from '@/components/ui/progress-bar'
+import { Card } from '@/components/ui/Card'
+import { ProgressBar } from '@/components/ui/ProgressBar'
 
 export function LoyaltyPoints() {
   const balance = useQuery({
@@ -22,7 +22,7 @@ export function LoyaltyPoints() {
     <Card>
       <h2 className="text-lg font-semibold">Loyalty points</h2>
       <p className="mt-2 text-3xl font-semibold">{points}</p>
-      <p className="text-sm text-[var(--color-foreground-muted)]">
+      <p className="text-sm text-foreground-muted">
         Approximate value ${balance.data?.valueUsd.toFixed(2) || '0.00'}
       </p>
       <div className="mt-4">
@@ -30,7 +30,7 @@ export function LoyaltyPoints() {
       </div>
       <div className="mt-6 grid gap-3">
         {history.data?.items.map((item) => (
-          <div key={item.id} className="flex justify-between gap-3 rounded-2xl bg-[var(--color-surface-muted)] p-3 text-sm">
+          <div key={item.id} className="flex justify-between gap-3 rounded-2xl bg-surface-muted p-3 text-sm">
             <span>{item.description || item.type}</span>
             <span className="font-medium">{item.points > 0 ? `+${item.points}` : item.points}</span>
           </div>

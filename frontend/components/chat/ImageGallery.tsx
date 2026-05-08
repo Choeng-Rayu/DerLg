@@ -1,3 +1,3 @@
-export default function ImageGallery() {
+export function ImageGallery() {
   return <div>Image Gallery</div>;
 }

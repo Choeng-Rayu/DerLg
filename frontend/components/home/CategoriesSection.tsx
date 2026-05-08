@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Landmark, Trees, UtensilsCrossed, WavesLadder, Mountain } from 'lucide-react'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui/Card'
 import { PageContainer } from '@/components/layout/PageContainer'
 
 const categories = [
@@ -18,7 +18,7 @@ export function CategoriesSection() {
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
             <h2 className="text-[length:var(--fluid-h3)] font-semibold">Browse by vibe</h2>
-            <p className="text-sm text-[var(--color-foreground-muted)]">
+            <p className="text-sm text-foreground-muted">
               Start wide, then tighten the route as you learn what fits.
             </p>
           </div>
@@ -29,7 +29,7 @@ export function CategoriesSection() {
             return (
               <Link key={category.value} href={`/explore?category=${category.value}`}>
                 <Card className="flex h-full items-center gap-3 p-4 transition hover:-translate-y-0.5">
-                  <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[var(--color-surface-muted)] text-[var(--color-primary-600)]">
+                  <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-surface-muted text-primary-600">
                     <Icon className="size-5" />
                   </span>
                   <span className="font-medium">{category.label}</span>

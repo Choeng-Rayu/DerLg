@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "home": "ទំព័រដើម",
+    "explore": "ស្វែងរក",
+    "booking": "កក់",
+    "myTrips": "ដំណើរកម្សាន្តរបស់ខ្ញុំ",
+    "profile": "ព័ត៌មានផ្ទាល់ខ្លួន",
+    "login": "ចូល",
+    "register": "ចុះឈ្មោះ",
+    "logout": "ចាកចេញ"
+  },
+  "home": {
+    "heroTitle": "សូមស្វាគមន៍មកកាន់កម្ពុជា",
+    "heroSubtitle": "ការធ្វើដំណើរដ៏អស្ចារ្យនៅតាមប្រាសាទបុរាណ ទីក្រុងរស់រវើក និងធម្មជាតិស្រស់ស្អាត",
+    "searchPlaceholder": "តើអ្នកចង់ទៅណា?",
+    "bookNow": "កក់ឥឡូវនេះ",
+    "featuredTrips": "ដំណើរកម្សាន្តពិសេស",
+    "upcomingFestivals": "បុណ្យទំនាក់ទំនងខាងមុខ",
+    "categories": "ប្រភេទ",
+    "viewAll": "មើលទាំងអស់"
+  },
+  "explore": {
+    "places": "ទីកន្លែង",
+    "festivals": "បុណ្យ",
+    "map": "ផែនទី",
+    "filterBy": "ច្រោះតាម",
+    "search": "ស្វែងរក",
+    "noResults": "មិនមានលទ្ធផល"
+  },
+  "auth": {
+    "loginTitle": "ចូលគណនី",
+    "registerTitle": "បង្កើតគណនី",
+    "email": "អ៊ីមែល",
+    "password": "លេខសម្ងាត់",
+    "name": "ឈ្មោះពេញ",
+    "phone": "លេខទូរស័ព្ទ",
+    "submit": "បញ្ជូន",
+    "forgotPassword": "ភ្លេចលេខសម្ងាត់?",
+    "noAccount": "មិនទាន់មានគណនី?",
+    "haveAccount": "មានគណនីរួចហើយ?"
+  },
+  "booking": {
+    "date": "កាលបរិច្ឆេទ",
+    "guests": "ភ្ញៀវ",
+    "specialRequests": "សំណើពិសេស",
+    "bookNow": "កក់ឥឡូវនេះ",
+    "totalPrice": "តម្លៃសរុប"
+  },
+  "common": {
+    "loading": "កំពុងផ្ទុក...",
+    "error": "មានបញ្ហាបានកើតឡើង",
+    "retry": "ព្យាយាមម្តងទៀត",
+    "cancel": "បោះបង់",
+    "save": "រក្សាទុក",
+    "delete": "លុប",
+    "confirm": "បញ្ជាក់",
+    "close": "បិទ",
+    "yes": "បាទ/ចាស",
+    "no": "ទេ"
+  },
+  "profile": {
+    "myProfile": "ព័ត៌មានផ្ទាល់ខ្លួន",
+    "loyaltyPoints": "ពិន្ទុស្មោះត្រង់",
+    "studentDiscount": "ការបញ្ចុះតម្លៃនិស្សិត",
+    "settings": "ការកំណត់",
+    "language": "ភាសា",
+    "theme": "ស្បែក",
+    "darkMode": "ម៉ូដងងឹត",
+    "lightMode": "ម៉ូដភ្លឺ",
+    "notifications": "ការជូនដំណឹង",
+    "deleteAccount": "លុបគណនី"
+  }
+}

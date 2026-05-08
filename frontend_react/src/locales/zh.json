@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "home": "首页",
+    "explore": "探索",
+    "booking": "预订",
+    "myTrips": "我的行程",
+    "profile": "个人资料",
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出"
+  },
+  "home": {
+    "heroTitle": "发现柬埔寨",
+    "heroSubtitle": "穿越古老寺庙、活力城市和原始自然的难忘旅程",
+    "searchPlaceholder": "你想去哪里？",
+    "bookNow": "立即预订",
+    "featuredTrips": "精选旅程",
+    "upcomingFestivals": "即将举行的节日",
+    "categories": "分类",
+    "viewAll": "查看全部"
+  },
+  "explore": {
+    "places": "地点",
+    "festivals": "节日",
+    "map": "地图",
+    "filterBy": "筛选",
+    "search": "搜索",
+    "noResults": "未找到结果"
+  },
+  "auth": {
+    "loginTitle": "欢迎回来",
+    "registerTitle": "创建账户",
+    "email": "邮箱",
+    "password": "密码",
+    "name": "全名",
+    "phone": "手机号码",
+    "submit": "提交",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "还没有账户？",
+    "haveAccount": "已有账户？"
+  },
+  "booking": {
+    "date": "日期",
+    "guests": "客人数",
+    "specialRequests": "特殊要求",
+    "bookNow": "立即预订",
+    "totalPrice": "总价"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出了点问题",
+    "retry": "重试",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "confirm": "确认",
+    "close": "关闭",
+    "yes": "是",
+    "no": "否"
+  },
+  "profile": {
+    "myProfile": "我的资料",
+    "loyaltyPoints": "积分",
+    "studentDiscount": "学生折扣",
+    "settings": "设置",
+    "language": "语言",
+    "theme": "主题",
+    "darkMode": "深色模式",
+    "lightMode": "浅色模式",
+    "notifications": "通知",
+    "deleteAccount": "删除账户"
+  }
+}

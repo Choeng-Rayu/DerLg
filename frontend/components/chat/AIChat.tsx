@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { env } from '@/lib/env'
 import { useAppStore } from '@/stores/app-store'
-import { Drawer } from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
+import { Drawer } from '@/components/ui/Drawer'
+import { Button } from '@/components/ui/Button'
 import { useWebSocket } from '@/hooks/useWebSocket'
 import type { ChatMessage } from '@/types'
 
@@ -49,17 +49,17 @@ export function AIChat() {
   return (
     <Drawer open={open} onClose={closeChat} title="AI planner">
       <div className="flex h-[calc(100vh-8rem)] flex-col">
-        <div className="mb-3 text-xs text-[var(--color-foreground-subtle)]">
+        <div className="mb-3 text-xs text-foreground-subtle">
           Status: {websocket.status}
         </div>
-        <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl bg-[var(--color-surface-muted)] p-3">
+        <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl bg-surface-muted p-3">
           {grouped.map((message) => (
             <div
               key={message.id}
               className={`max-w-[90%] rounded-2xl px-3 py-2 text-sm ${
                 message.role === 'user'
-                  ? 'ml-auto bg-[var(--color-primary-500)] text-white'
-                  : 'bg-[var(--color-surface-raised)] text-[var(--color-foreground)]'
+                  ? 'ml-auto bg-primary-500 text-white'
+                  : 'bg-surface-raised text-foreground'
               }`}
             >
               {message.content}
@@ -86,7 +86,7 @@ export function AIChat() {
           <input
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
-            className="min-h-11 flex-1 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 outline-none"
+            className="min-h-11 flex-1 rounded-2xl border border-border bg-surface-raised px-4 outline-none"
             placeholder="Ask about timing, budgets, routes, or hotel combinations"
           />
           <Button type="submit">Send</Button>

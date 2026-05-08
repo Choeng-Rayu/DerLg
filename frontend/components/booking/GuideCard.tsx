@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { Languages } from 'lucide-react'
-import { Avatar } from '@/components/ui/avatar'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Avatar } from '@/components/ui/Avatar'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
 import type { Guide } from '@/types'
 
 export function GuideCard({ guide }: { guide: Guide }) {
@@ -13,7 +13,7 @@ export function GuideCard({ guide }: { guide: Guide }) {
           <Avatar alt={guide.user?.name || 'Guide'} src={guide.user?.avatarUrl} />
           <div className="min-w-0">
             <h3 className="truncate text-lg font-semibold">{guide.user?.name || 'Local guide'}</h3>
-            <p className="mt-1 line-clamp-2 text-sm text-[var(--color-foreground-muted)]">
+            <p className="mt-1 line-clamp-2 text-sm text-foreground-muted">
               {guide.bio || 'Experienced private guide for cultural and regional itineraries.'}
             </p>
           </div>

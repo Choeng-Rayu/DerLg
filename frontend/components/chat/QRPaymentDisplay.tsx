@@ -1,3 +1,3 @@
-export default function QRPaymentDisplay() {
+export function QRPaymentDisplay() {
   return <div>QR Payment Display</div>;
 }

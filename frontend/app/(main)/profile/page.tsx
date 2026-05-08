@@ -8,7 +8,7 @@ import { Preferences } from '@/components/profile/Preferences'
 import { LoyaltyPoints } from '@/components/profile/LoyaltyPoints'
 import { ProfileForm } from '@/components/profile/ProfileForm'
 import { StudentVerification } from '@/components/profile/StudentVerification'
-import { Tabs } from '@/components/ui/tabs'
+import { Tabs } from '@/components/ui/Tabs'
 import { api } from '@/lib/api'
 
 export default function ProfilePage() {
@@ -34,7 +34,7 @@ function ProfileContent() {
     <PageContainer className="py-8">
       <div className="mb-6">
         <h1 className="text-[length:var(--fluid-h2)] font-semibold">Profile</h1>
-        <p className="mt-2 text-sm text-[var(--color-foreground-muted)]">
+        <p className="mt-2 text-sm text-foreground-muted">
           Personal info, loyalty balance, student status, and preferences.
         </p>
       </div>

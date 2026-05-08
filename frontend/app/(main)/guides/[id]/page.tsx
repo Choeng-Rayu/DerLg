@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import { api } from '@/lib/api'
 import { PageContainer } from '@/components/layout/PageContainer'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui/Card'
 
 export default function GuideDetailPage() {
   const params = useParams<{ id: string }>()
@@ -18,7 +18,7 @@ export default function GuideDetailPage() {
       {guide.data ? (
         <Card>
           <h1 className="text-[length:var(--fluid-h2)] font-semibold">{guide.data.user?.name}</h1>
-          <p className="mt-3 text-[var(--color-foreground-muted)]">{guide.data.bio}</p>
+          <p className="mt-3 text-foreground-muted">{guide.data.bio}</p>
         </Card>
       ) : null}
     </PageContainer>

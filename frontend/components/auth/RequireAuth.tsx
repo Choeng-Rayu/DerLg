@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
-import { Spinner } from '@/components/ui/spinner'
+import { Spinner } from '@/components/ui/Spinner'
 
 export function RequireAuth({
   children,

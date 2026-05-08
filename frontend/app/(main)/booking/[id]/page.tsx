@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import { BookingSummary } from '@/components/booking/BookingSummary'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { api } from '@/lib/api'
 
@@ -21,7 +21,7 @@ export default function BookingReservedPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
           <div>
             <h1 className="text-[length:var(--fluid-h2)] font-semibold">Reserved booking</h1>
-            <p className="mt-2 text-sm text-[var(--color-foreground-muted)]">
+            <p className="mt-2 text-sm text-foreground-muted">
               Your booking is reserved. Complete payment before the hold expires.
             </p>
           </div>

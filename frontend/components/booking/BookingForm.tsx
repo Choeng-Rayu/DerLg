@@ -6,12 +6,12 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { api } from '@/lib/api'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { DateRangePicker } from '@/components/ui/date-range-picker'
-import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
-import { toast } from '@/components/ui/toast'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { DateRangePicker } from '@/components/ui/DateRangePicker'
+import { Input } from '@/components/ui/Input'
+import { Select } from '@/components/ui/Select'
+import { toast } from '@/components/ui/Toast'
 
 const bookingSchema = z.object({
   bookingType: z.enum(['PACKAGE', 'HOTEL_ONLY', 'TRANSPORT_ONLY', 'GUIDE_ONLY']),
@@ -127,7 +127,7 @@ export function BookingForm({ tripId }: { tripId?: string }) {
         <label className="grid gap-2 text-sm">
           <span className="font-medium">Special requests</span>
           <textarea
-            className="min-h-28 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 outline-none"
+            className="min-h-28 rounded-2xl border border-border bg-surface-raised px-4 py-3 outline-none"
             {...form.register('specialRequests')}
           />
         </label>
@@ -138,13 +138,13 @@ export function BookingForm({ tripId }: { tripId?: string }) {
             min={0}
             {...form.register('loyaltyPointsToRedeem', { valueAsNumber: true })}
           />
-          <label className="flex min-h-11 items-center gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4">
+          <label className="flex min-h-11 items-center gap-3 rounded-2xl border border-border bg-surface-raised px-4">
             <input type="checkbox" {...form.register('applyStudentDiscount')} />
             <span>Apply student discount</span>
           </label>
         </div>
         {availability.data ? (
-          <p className="text-sm text-[var(--color-foreground-muted)]">
+          <p className="text-sm text-foreground-muted">
             Availability: {availability.data.available ? 'Available' : 'Conflicts detected'}
           </p>
         ) : null}

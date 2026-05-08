@@ -8,7 +8,7 @@ export default function MainLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-[var(--color-surface-base)]">
+    <div className="min-h-screen bg-surface-base">
       <TopBar />
       <main id="content" className="pb-24 lg:pb-10">
         {children}
